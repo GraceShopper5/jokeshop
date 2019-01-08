@@ -83,4 +83,4 @@ const nameCase = user => {
 
 User.beforeCreate(setSaltAndPassword)
 User.beforeUpdate(setSaltAndPassword)
-User.beforeValidate(nameCase)
+User.beforeCreate(nameCase)
