@@ -8,6 +8,14 @@ const User = db.define('user', {
     unique: true,
     allowNull: false
   },
+  firstName: {
+    type: Sequelize.STRING,
+    allowNull: false
+  },
+  lastName: {
+    type: Sequelize.STRING,
+    allowNull: false
+  },
   password: {
     type: Sequelize.STRING,
     // Making `.password` act like a func hides it when serializing to JSON.
@@ -26,6 +34,10 @@ const User = db.define('user', {
   },
   googleId: {
     type: Sequelize.STRING
+  },
+  isAdmin: {
+    type: Sequelize.BOOLEAN,
+    defaultValue: false
   }
 })
 
@@ -63,5 +75,12 @@ const setSaltAndPassword = user => {
   }
 }
 
+const nameCase = user => {
+  const { firstName, lastName } = user
+  user.firstName = firstName[0].toUpperCase() + firstName.slice(1).toLowerCase();
+  user.lastName = lastName[0].toUpperCase() + lastName.slice(1).toLowerCase();
+}
+
 User.beforeCreate(setSaltAndPassword)
 User.beforeUpdate(setSaltAndPassword)
+User.beforeCreate(nameCase);
