@@ -76,11 +76,11 @@ const setSaltAndPassword = user => {
 }
 
 const nameCase = user => {
-  const { firstName, lastName } = user
-  user.firstName = firstName[0].toUpperCase() + firstName.slice(1).toLowerCase();
-  user.lastName = lastName[0].toUpperCase() + lastName.slice(1).toLowerCase();
+  const {firstName, lastName} = user
+  user.firstName = firstName[0].toUpperCase() + firstName.slice(1).toLowerCase()
+  user.lastName = lastName[0].toUpperCase() + lastName.slice(1).toLowerCase()
 }
 
 User.beforeCreate(setSaltAndPassword)
 User.beforeUpdate(setSaltAndPassword)
-User.beforeCreate(nameCase);
+User.beforeValidate(nameCase)
