@@ -1,6 +1,6 @@
 const User = require('./user')
 const Product = require('./product')
-// const Order = require('./order')
+const Order = require('./order')
 const OrderItem = require('./orderItem')
 
 /**
@@ -10,14 +10,10 @@ const OrderItem = require('./orderItem')
  *    BlogPost.belongsTo(User)
  */
 
-// Order.belongsTo(User)
-// User.hasMany(Order)
-
-// OrderItem.belongsTo(Order)
-// Order.hasMany(OrderItem)
-
-OrderItem.belongsTo(Product)
-Product.hasMany(OrderItem)
+Order.belongsTo(User)
+User.hasMany(Order)
+Order.belongsToMany(Product, { through: 'OrderItem' });
+Product.belongsToMany(Order, { through: 'OrderItem' });
 
 /**
  * We'll export all of our models here, so that any time a module needs a model,
@@ -28,6 +24,6 @@ Product.hasMany(OrderItem)
 module.exports = {
   User,
   Product,
-  // Order,
+  Order,
   OrderItem
 }
