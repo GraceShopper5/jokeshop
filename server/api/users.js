@@ -1,6 +1,5 @@
 const router = require('express').Router()
-const {User} = require('../db/models')
-const {Order} = require('../db/models/order')
+const {User, Order} = require('../db/models')
 module.exports = router
 
 router.get('/', async (req, res, next) => {
@@ -42,9 +41,9 @@ router.get('/:id/order-history', async (req, res, next) => {
       (req.session.userId && req.session.userId == req.params.id) ||
       req.session.userIsAdmin
     ) {
-      const orders = await Order.findAll(req.params.id, {
+      const orders = await Order.findAll({
         where: {
-          id: req.params.id,
+          userId: req.params.id,
           isPurchased: true
         }
       })

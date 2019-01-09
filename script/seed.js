@@ -12,7 +12,8 @@ async function seed() {
       email: 'cody@email.com',
       firstName: 'cOdy',
       lastName: 'theDog',
-      password: '123'
+      password: '123',
+      isAdmin: true
     }),
     User.create({
       email: 'murphy@email.com',
@@ -44,37 +45,37 @@ async function seed() {
 
   console.log(`seeded ${products.length} products`)
 
-  // const orders = await Promise.all([
-  //   Order.create({
-  //     userId: 1
-  //   }),
-  //   Order.create({
-  //     userId: 1
-  //   }),
-  //   Order.create({
-  //     userId: 2
-  //   })
-  // ])
-  // console.log(`seeded ${orders.length} orders`)
+  const orders = await Promise.all([
+    // Only one order for each userId can be false
+    Order.create({
+      userId: 1,
+      isPurchased: true
+    }),
+    Order.create({
+      userId: 2,
+      isPurchased: true
+    })
+  ])
+  console.log(`seeded ${orders.length} orders`)
 
-  // const orderItems = await Promise.all([
-  //   OrderItem.create({
-  //     productId: 1,
-  //     orderId: 1,
-  //     quantity: 2
-  //   }),
-  //   OrderItem.create({
-  //     productId: 2,
-  //     orderId: 1,
-  //     quantity: 1
-  //   }),
-  //   OrderItem.create({
-  //     productId: 3,
-  //     orderId: 2,
-  //     quantity: 1
-  //   })
-  // ])
-  // console.log(`seeded ${orderItems.length} order items`)
+  const orderItems = await Promise.all([
+    OrderItem.create({
+      productId: 1,
+      orderId: 3,
+      quantity: 2
+    }),
+    OrderItem.create({
+      productId: 2,
+      orderId: 3,
+      quantity: 1
+    }),
+    OrderItem.create({
+      productId: 3,
+      orderId: 4,
+      quantity: 1
+    })
+  ])
+  console.log(`seeded ${orderItems.length} order items`)
 
   console.log(`seeded successfully`)
 }
