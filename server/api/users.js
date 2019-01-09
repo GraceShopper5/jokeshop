@@ -4,7 +4,7 @@ module.exports = router
 
 router.get('/', async (req, res, next) => {
   try {
-    if (req.user.isAdmin) {
+    if (req.session.userIsAdmin) {
       const users = await User.findAll({
         attributes: ['id', 'email', 'firstName', 'lastName']
       })
@@ -19,7 +19,10 @@ router.get('/', async (req, res, next) => {
 
 router.get('/:id', async (req, res, next) => {
   try {
-    if ((req.user && req.user.id === req.params.id) || req.user.isAdmin) {
+    if (
+      (req.session.userId && req.session.userId == req.params.id) ||
+      req.session.userIsAdmin
+    ) {
       const user = await User.findById(req.params.id, {
         attributes: ['id', 'email', 'firstName', 'lastName']
       })
