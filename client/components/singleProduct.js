@@ -4,6 +4,7 @@ import {connect} from 'react-redux'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import Button from '@material-ui/core/Button'
+import Grid from '@material-ui/core/Grid'
 import Card from '@material-ui/core/Card'
 import CardActions from '@material-ui/core/CardActions'
 import CardContent from '@material-ui/core/CardContent'
@@ -15,13 +16,12 @@ const styles = theme => ({
   icon: {
     marginRight: theme.spacing.unit * 2
   },
-  cardGrid: {
-    padding: `${theme.spacing.unit * 8}px 0`
-  },
   card: {
-    height: '100%',
+    height: '50%',
+    maxWidth: '50%',
     display: 'flex',
-    flexDirection: 'column'
+    flexDirection: 'column',
+    justify: 'center'
   },
   cardMedia: {
     paddingTop: '56.25%' // 16:9
@@ -33,33 +33,36 @@ const styles = theme => ({
 
 class SingleProduct extends Component {
   componentDidMount() {
-    this.props.fetchSingleProduct()
+    this.props.fetchSingleProduct(this.props.match.params.productId)
   }
 
   render() {
     const {classes, product} = this.props
+    console.log(product)
     return (
-      <Card className={classes.card}>
-        <CardMedia
-          className={classes.cardMedia}
-          image={product.imageUrl}
-          title={product.name}
-        />
-        <CardContent className={classes.cardContent}>
-          <Typography gutterBottom variant="h5" component="h2">
-            {product.name}
-          </Typography>
-          <Typography>{product.description}</Typography>
-        </CardContent>
-        <CardActions>
-          <Button size="small" color="primary">
-            Purchase
-          </Button>
-          <Button size="small" color="primary">
-            Add to Cart
-          </Button>
-        </CardActions>
-      </Card>
+      <Grid container justify="center">
+        <Card className={classes.card}>
+          <CardMedia
+            className={classes.cardMedia}
+            image={`../../${product.imageUrl}`}
+            title={product.name}
+          />
+          <CardContent className={classes.cardContent}>
+            <Typography gutterBottom variant="h5" component="h2">
+              {product.name}
+            </Typography>
+            <Typography>{product.description}</Typography>
+          </CardContent>
+          <CardActions>
+            <Button size="small" color="primary">
+              Purchase
+            </Button>
+            <Button size="small" color="primary">
+              Add to Cart
+            </Button>
+          </CardActions>
+        </Card>
+      </Grid>
     )
   }
 }
@@ -70,8 +73,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    fetchSingleProduct: () => {
-      dispatch(fetchSingleProduct())
+    fetchSingleProduct: productId => {
+      dispatch(fetchSingleProduct(productId))
     }
   }
 }
