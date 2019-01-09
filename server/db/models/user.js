@@ -1,6 +1,7 @@
 const crypto = require('crypto')
 const Sequelize = require('sequelize')
 const db = require('../db')
+const Order = require('./order')
 
 const User = db.define('user', {
   email: {
@@ -81,6 +82,16 @@ const nameCase = user => {
   user.lastName = lastName[0].toUpperCase() + lastName.slice(1).toLowerCase()
 }
 
+const makeNewOrder = async user => {
+  const newOrder = await Order.create({userId: user.id})
+  console.log(
+    `created new order for new user ${user.firstName} (${user.id}) order #${
+      newOrder.id
+    }`
+  )
+}
+
 User.beforeCreate(setSaltAndPassword)
 User.beforeUpdate(setSaltAndPassword)
 User.beforeCreate(nameCase)
+User.afterCreate(makeNewOrder)
