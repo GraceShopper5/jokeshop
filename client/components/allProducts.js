@@ -74,26 +74,26 @@ class AllProducts extends Component {
       <div className={classNames(classes.layout, classes.cardGrid)}>
         {/* End hero unit */}
         <Grid container spacing={40}>
-          {this.props.products.map(card => (
-            <Grid item key={card.id} sm={6} md={4} lg={3}>
-              <Card className={classes.card}>
+          {this.props.products.map(product => (
+            <Grid item key={product.id} sm={6} md={4} lg={3}>
+              <Card className={classes.product}>
                 <CardMedia
                   className={classes.cardMedia}
-                  image={card.imageUrl}
-                  title={card.name}
+                  image={product.imageUrl}
+                  title={product.name}
                 />
                 <CardContent className={classes.cardContent}>
                   <Typography gutterBottom variant="h5" component="h2">
-                    {card.name}
+                    {product.name}
                   </Typography>
-                  <Typography>{card.description}</Typography>
+                  <Typography>{product.description}</Typography>
                 </CardContent>
                 <CardActions>
                   <Button
                     size="small"
                     color="primary"
                     component={Link}
-                    to={`/product/${card.id}`}
+                    to={`/products/${product.id}`}
                   >
                     View
                   </Button>
