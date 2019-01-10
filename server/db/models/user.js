@@ -2,6 +2,7 @@ const crypto = require('crypto')
 const Sequelize = require('sequelize')
 const db = require('../db')
 const Order = require('./order')
+const Product = require('./product')
 
 const User = db.define('user', {
   email: {
@@ -51,10 +52,28 @@ User.prototype.correctPassword = function(candidatePwd) {
   return User.encryptPassword(candidatePwd, this.salt()) === this.password()
 }
 
+User.getUserShoppingCart = async function(userId) {
+  const shoppingCart = await Order.findOne({
+    where: {userId, isPurchased: false},
+    include: [{model: Product}]
+  })
+  return shoppingCart
+}
+
 User.prototype.getShoppingCart = async function() {
   const shoppingCart = await Order.findOne({
-    where: {userId: this.id, isPurchased: false}
+    where: {userId: this.id, isPurchased: false},
+    include: [{model: Product}]
   })
+  return shoppingCart
+}
+
+User.prototype.getOrderHistory = async function() {
+  const orderHistory = await Order.findAll({
+    where: {userId: this.id, isPurchased: true},
+    include: [{model: Product}]
+  })
+  return orderHistory
 }
 
 /**
@@ -88,8 +107,8 @@ const nameCase = user => {
   user.lastName = lastName[0].toUpperCase() + lastName.slice(1).toLowerCase()
 }
 
-const makeNewOrder = async user => {
-  const newOrder = await Order.create({userId: user.id})
+const createShoppingCart = async user => {
+  const newOrder = await Order.createUserOrder(user.id, false)
   console.log(
     `created new order for new user ${user.firstName} (${user.id}) order #${
       newOrder.id
@@ -100,4 +119,4 @@ const makeNewOrder = async user => {
 User.beforeCreate(setSaltAndPassword)
 User.beforeUpdate(setSaltAndPassword)
 User.beforeCreate(nameCase)
-User.afterCreate(makeNewOrder)
+User.afterCreate(createShoppingCart)

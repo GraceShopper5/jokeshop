@@ -53,7 +53,12 @@ class SingleProduct extends Component {
     this.setState({[name]: event.target.value})
   }
   handleAddToCart() {
-    this.props.addToCart(this.props.product, this.state.quantity)
+    this.props.addToCart(
+      this.props.product,
+      this.state.quantity,
+      false,
+      this.props.userId
+    )
   }
   render() {
     const {classes, product} = this.props
@@ -109,7 +114,10 @@ class SingleProduct extends Component {
 }
 
 const mapStateToProps = state => {
-  return {product: state.product.selectedProduct}
+  return {
+    product: state.product.selectedProduct,
+    userId: state.user.id
+  }
 }
 
 const mapDispatchToProps = dispatch => {
@@ -117,7 +125,8 @@ const mapDispatchToProps = dispatch => {
     fetchSingleProduct: productId => {
       dispatch(fetchSingleProduct(productId))
     },
-    addToCart: (product, quantity) => addToCart(product, quantity)
+    addToCart: (product, quantity, overwrite, userId) =>
+      addToCart(product, quantity, overwrite, userId)
   }
 }
 

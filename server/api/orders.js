@@ -36,15 +36,25 @@ router.get('/:id', async (req, res, next) => {
   }
 })
 
-router.put('/:id', async (req, res, next) => {
+// router.put('/:id', async (req, res, next) => {
+//   try {
+//     const existingOrderItem = await OrderItem.findOne({
+//       where: {
+//         productId: req.body.product.id,
+//         orderId: req.params.id
+//       }
+//     })
+//     res.json(newOrderItem)
+//   } catch (err) {
+//     next(err)
+//   }
+// })
+
+//this is for a direct purchase (skipping the shopping cart)
+router.post('/', async (req, res, next) => {
   try {
-    const newOrderItem = await OrderItem.create({
-      productId: req.body.product.id,
-      pricePaid: req.body.product.price,
-      quantity: req.body.quantity,
-      orderId: req.params.id
-    })
-    res.json(newOrderItem)
+    const newOrder = await Order.createUserOrder(req.session.userId, true)
+    res.json(newOrder)
   } catch (err) {
     next(err)
   }
