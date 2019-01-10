@@ -23,6 +23,7 @@ class Routes extends Component {
           path="/products/:productId"
           render={renderProps => <SingleProduct {...renderProps} />}
         />
+        <Route path="/products" component={AllProducts} />
         <Route exact path="/" component={AllProducts} />
         <Route path="/login" component={Login} />
         <Route path="/signup" component={Signup} />
