@@ -127,6 +127,6 @@ const mapDispatchToProps = dispatch => {
 AllProducts.propTypes = {
   classes: PropTypes.object.isRequired
 }
-export default withStyles(styles)(
-  withRouter(connect(mapStateToProps, mapDispatchToProps)(AllProducts))
+export default withRouter(
+  connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(AllProducts))
 )
