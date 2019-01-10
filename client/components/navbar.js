@@ -52,7 +52,9 @@ const Navbar = ({handleClick, isLoggedIn, classes, firstName}) => (
         {isLoggedIn ? (
           <div>
             {/* The navbar will show these links after you log in */}
-            {firstName}
+            <Button className={classes.button} component={Link} to="/profile">
+              {firstName}
+            </Button>
             <Button onClick={handleClick} className={classes.button}>
               Logout
             </Button>
