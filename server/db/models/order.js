@@ -12,4 +12,8 @@ const Order = db.define('order', {
   }
 })
 
+Order.createUserOrder = function(userId, isPurchased) {
+  return this.create({userId, isPurchased})
+}
+
 module.exports = Order

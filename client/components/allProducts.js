@@ -1,18 +1,15 @@
 import React, {Component} from 'react'
+import {Link, withRouter} from 'react-router-dom'
 import {fetchProducts} from '../store'
 import {connect} from 'react-redux'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
-import AppBar from '@material-ui/core/AppBar'
 import Button from '@material-ui/core/Button'
-import CameraIcon from '@material-ui/icons/PhotoCamera'
 import Card from '@material-ui/core/Card'
 import CardActions from '@material-ui/core/CardActions'
 import CardContent from '@material-ui/core/CardContent'
 import CardMedia from '@material-ui/core/CardMedia'
-import CssBaseline from '@material-ui/core/CssBaseline'
 import Grid from '@material-ui/core/Grid'
-import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
 import {withStyles} from '@material-ui/core/styles'
 
@@ -77,22 +74,27 @@ class AllProducts extends Component {
       <div className={classNames(classes.layout, classes.cardGrid)}>
         {/* End hero unit */}
         <Grid container spacing={40}>
-          {this.props.products.map(card => (
-            <Grid item key={card.id} sm={6} md={4} lg={3}>
-              <Card className={classes.card}>
+          {this.props.products.map(product => (
+            <Grid item key={product.id} sm={6} md={4} lg={3}>
+              <Card className={classes.product}>
                 <CardMedia
                   className={classes.cardMedia}
-                  image={card.imageUrl}
-                  title={card.name}
+                  image={product.imageUrl}
+                  title={product.name}
                 />
                 <CardContent className={classes.cardContent}>
                   <Typography gutterBottom variant="h5" component="h2">
-                    {card.name}
+                    {product.name}
                   </Typography>
-                  <Typography>{card.description}</Typography>
+                  <Typography>{product.description}</Typography>
                 </CardContent>
                 <CardActions>
-                  <Button size="small" color="primary">
+                  <Button
+                    size="small"
+                    color="primary"
+                    component={Link}
+                    to={`/products/${product.id}`}
+                  >
                     View
                   </Button>
                   <Button size="small" color="primary">
@@ -126,5 +128,5 @@ AllProducts.propTypes = {
   classes: PropTypes.object.isRequired
 }
 export default withStyles(styles)(
-  connect(mapStateToProps, mapDispatchToProps)(AllProducts)
+  withRouter(connect(mapStateToProps, mapDispatchToProps)(AllProducts))
 )
