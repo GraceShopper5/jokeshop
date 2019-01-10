@@ -39,6 +39,18 @@ export const fetchSingleProduct = productId => async dispatch => {
   }
 }
 
+export const addToCart = async (product, quantity) => {
+  try {
+    const orderId = 1 // need to figure out how to get the current user's cart -> it is the order where the userId is the session.userId and isPurchased= false
+    const {data: orderItem} = await axios.put(`/api/orders/${orderId}`, {
+      product,
+      quantity
+    })
+  } catch (err) {
+    console.error(err)
+  }
+}
+
 /**
  * REDUCER
  */

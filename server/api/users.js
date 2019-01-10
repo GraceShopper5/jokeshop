@@ -20,7 +20,7 @@ router.get('/', async (req, res, next) => {
 router.get('/:id', async (req, res, next) => {
   try {
     if (
-      (req.session.userId && req.session.userId == req.params.id) ||
+      (req.session.userId && req.session.userId === req.params.id) ||
       req.session.userIsAdmin
     ) {
       const user = await User.findById(req.params.id, {
@@ -38,7 +38,7 @@ router.get('/:id', async (req, res, next) => {
 router.get('/:id/order-history', async (req, res, next) => {
   try {
     if (
-      (req.session.userId && req.session.userId == req.params.id) ||
+      (req.session.userId && req.session.userId === req.params.id) ||
       req.session.userIsAdmin
     ) {
       const orders = await Order.findAll({

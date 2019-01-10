@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {fetchSingleProduct} from '../store'
+import {fetchSingleProduct, addToCart} from '../store'
 import {connect} from 'react-redux'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
@@ -10,6 +10,11 @@ import CardActions from '@material-ui/core/CardActions'
 import CardContent from '@material-ui/core/CardContent'
 import CardMedia from '@material-ui/core/CardMedia'
 import Typography from '@material-ui/core/Typography'
+import FormControl from '@material-ui/core/FormControl'
+import InputLabel from '@material-ui/core/InputLabel'
+import Select from '@material-ui/core/Select'
+import OutlinedInput from '@material-ui/core/OutlinedInput'
+
 import {withStyles} from '@material-ui/core/styles'
 
 const styles = theme => ({
@@ -28,17 +33,31 @@ const styles = theme => ({
   },
   cardContent: {
     flexGrow: 1
+  },
+  formControl: {
+    margin: theme.spacing.unit,
+    minWidth: 120
   }
 })
 
 class SingleProduct extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {quantity: ''}
+    this.handleAddToCart = this.handleAddToCart.bind(this)
+  }
   componentDidMount() {
     this.props.fetchSingleProduct(this.props.match.params.productId)
   }
-
+  handleChange = name => event => {
+    this.setState({[name]: event.target.value})
+  }
+  handleAddToCart() {
+    this.props.addToCart(this.props.product, this.state.quantity)
+  }
   render() {
     const {classes, product} = this.props
-    console.log(product)
+    // console.log(product)
     return (
       <Grid container justify="center">
         <Card className={classes.card}>
@@ -57,9 +76,31 @@ class SingleProduct extends Component {
             <Button size="small" color="primary">
               Purchase
             </Button>
-            <Button size="small" color="primary">
+            <Button size="small" color="primary" onClick={this.handleAddToCart}>
               Add to Cart
             </Button>
+            <FormControl variant="outlined" className={classes.formControl}>
+              <InputLabel htmlFor="outlined-quantity">Quantity</InputLabel>
+              <Select
+                native
+                value={this.state.quantity}
+                onChange={this.handleChange('quantity')}
+                input={
+                  <OutlinedInput
+                    name="quantity"
+                    labelWidth={5}
+                    id="outlined-quantity"
+                  />
+                }
+              >
+                <option value="" />
+                <option value={1}>1</option>
+                <option value={2}>2</option>
+                <option value={3}>3</option>
+                <option value={4}>4</option>
+                <option value={5}>5</option>
+              </Select>
+            </FormControl>
           </CardActions>
         </Card>
       </Grid>
@@ -75,7 +116,8 @@ const mapDispatchToProps = dispatch => {
   return {
     fetchSingleProduct: productId => {
       dispatch(fetchSingleProduct(productId))
-    }
+    },
+    addToCart: (product, quantity) => addToCart(product, quantity)
   }
 }
 

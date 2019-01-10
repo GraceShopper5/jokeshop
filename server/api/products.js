@@ -4,8 +4,8 @@ module.exports = router
 
 router.get('/', async (req, res, next) => {
   try {
-    const jokes = await Product.findAll()
-    res.json(jokes)
+    const products = await Product.findAll()
+    res.json(products)
   } catch (err) {
     next(err)
   }
@@ -13,8 +13,8 @@ router.get('/', async (req, res, next) => {
 
 router.get('/:id', async (req, res, next) => {
   try {
-    const joke = await Product.findById(req.params.id)
-    res.json(joke)
+    const product = await Product.findById(req.params.id)
+    res.json(product)
   } catch (err) {
     next(err)
   }
