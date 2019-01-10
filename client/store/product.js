@@ -23,18 +23,17 @@ const getSingleProduct = product => ({type: GET_SINGLE_PRODUCT, product})
  */
 export const fetchProducts = () => async dispatch => {
   try {
-    console.log('hiiii')
-    const {data: jokes} = await axios.get('/api/jokes')
-    dispatch(getProducts(jokes))
+    const {data: products} = await axios.get('/api/products')
+    dispatch(getProducts(products))
   } catch (err) {
     console.error(err)
   }
 }
 
-export const fetchSingleProduct = jokeId => async dispatch => {
+export const fetchSingleProduct = productId => async dispatch => {
   try {
-    const {data: joke} = await axios.get(`/api/jokes/${jokeId}`)
-    dispatch(getSingleProduct(joke))
+    const {data: product} = await axios.get(`/api/products/${productId}`)
+    dispatch(getSingleProduct(product))
   } catch (err) {
     console.error(err)
   }
