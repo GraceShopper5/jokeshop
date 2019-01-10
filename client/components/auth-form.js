@@ -7,7 +7,7 @@ import {auth} from '../store'
  * COMPONENT
  */
 const AuthForm = props => {
-  const {name, displayName, handleSubmit, error} = props
+  const {userId, name, displayName, handleSubmit, error} = props
 
   return (
     <div>
@@ -59,6 +59,7 @@ const AuthForm = props => {
  */
 const mapLogin = state => {
   return {
+    userId: state.user.id,
     name: 'login',
     displayName: 'Login',
     error: state.user.error
@@ -67,6 +68,7 @@ const mapLogin = state => {
 
 const mapSignup = state => {
   return {
+    userId: state.user.id,
     name: 'signup',
     displayName: 'Sign Up',
     error: state.user.error

@@ -3,9 +3,16 @@ import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import {Link, withRouter} from 'react-router-dom'
 import {logout} from '../store'
-import {AppBar, Typography, Button, Toolbar} from '@material-ui/core'
+import {
+  AppBar,
+  Typography,
+  Button,
+  Toolbar,
+  IconButton,
+  Badge
+} from '@material-ui/core'
 import {withStyles} from '@material-ui/core/styles'
-import {InsertEmoticon} from '@material-ui/icons'
+import {InsertEmoticon, ShoppingCart} from '@material-ui/icons'
 
 const styles = theme => ({
   appBar: {
@@ -16,22 +23,38 @@ const styles = theme => ({
   },
   button: {
     margin: theme.spacing.unit
+  },
+  badge: {
+    top: 1,
+    right: -15
+    // The border color match the background color.
+    // border: `2px solid ${
+    //   theme.palette.type === 'light' ? theme.palette.grey[200] : theme.palette.grey[900]
+    // }`,
   }
 })
 
-const Navbar = ({handleClick, isLoggedIn, classes}) => (
+const Navbar = ({handleClick, isLoggedIn, classes, firstName}) => (
   <div>
     <AppBar position="static" className={classes.appBar}>
       <Toolbar>
-        <Link to="/">
+        <Button
+          className={classes.button}
+          component={Link}
+          to="/"
+          color="secondary"
+        >
           <InsertEmoticon className={classes.icon} />
           <Typography variant="h6" color="inherit" noWrap>
             Ye Olde Joke Shop
           </Typography>
-        </Link>
+        </Button>
         {isLoggedIn ? (
           <div>
             {/* The navbar will show these links after you log in */}
+            <Button className={classes.button} component={Link} to="/profile">
+              {firstName}
+            </Button>
             <Button onClick={handleClick} className={classes.button}>
               Logout
             </Button>
@@ -39,14 +62,24 @@ const Navbar = ({handleClick, isLoggedIn, classes}) => (
         ) : (
           <div>
             {/* The navbar will show these links before you log in */}
-            <Link to="/login">
-              <Button className={classes.button}>Login</Button>
-            </Link>
-            <Link to="/signup">
-              <Button className={classes.button}>Sign Up </Button>
-            </Link>
+            <Button className={classes.button} component={Link} to="/login">
+              Login
+            </Button>
+            <Button className={classes.button} component={Link} to="signup">
+              Sign Up{' '}
+            </Button>
           </div>
         )}
+        <Badge
+          color="secondary"
+          badgeContent={4}
+          invisible={false}
+          classes={{badge: classes.badge}}
+        >
+          <IconButton color="inherit">
+            <ShoppingCart />
+          </IconButton>
+        </Badge>
       </Toolbar>
     </AppBar>
 
@@ -60,7 +93,8 @@ const Navbar = ({handleClick, isLoggedIn, classes}) => (
  */
 const mapState = state => {
   return {
-    isLoggedIn: !!state.user.id
+    isLoggedIn: !!state.user.id,
+    firstName: state.user.firstName
   }
 }
 
