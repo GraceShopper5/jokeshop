@@ -39,17 +39,17 @@ export const fetchSingleProduct = productId => async dispatch => {
   }
 }
 
-export const addToCart = async (product, quantity, overwrite, userId) => {
-  try {
-    await axios.put(`/api/users/${userId}/shopping-cart`, {
-      product,
-      quantity,
-      overwrite
-    })
-  } catch (err) {
-    console.error(err)
-  }
-}
+// export const addToCart = async (product, quantity, overwrite, userId) => {
+//   try {
+//     await axios.put(`/api/users/${userId}/shopping-cart`, {
+//       product,
+//       quantity,
+//       overwrite
+//     })
+//   } catch (err) {
+//     console.error(err)
+//   }
+// }
 
 /**
  * REDUCER
