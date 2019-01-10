@@ -51,6 +51,12 @@ User.prototype.correctPassword = function(candidatePwd) {
   return User.encryptPassword(candidatePwd, this.salt()) === this.password()
 }
 
+User.prototype.getShoppingCart = async function() {
+  const shoppingCart = await Order.findOne({
+    where: {userId: this.id, isPurchased: false}
+  })
+}
+
 /**
  * classMethods
  */
