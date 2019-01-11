@@ -76,7 +76,7 @@ const Navbar = ({handleClick, isLoggedIn, classes, firstName}) => (
           invisible={false}
           classes={{badge: classes.badge}}
         >
-          <IconButton color="inherit">
+          <IconButton color="inherit" component={Link} to="/shopping-cart">
             <ShoppingCart />
           </IconButton>
         </Badge>
@@ -115,6 +115,6 @@ Navbar.propTypes = {
   isLoggedIn: PropTypes.bool.isRequired
 }
 
-export default withStyles(styles)(
-  withRouter(connect(mapState, mapDispatch)(Navbar))
+export default withRouter(
+  connect(mapState, mapDispatch)(withStyles(styles)(Navbar))
 )
