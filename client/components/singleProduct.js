@@ -56,7 +56,7 @@ class SingleProduct extends Component {
   handleAddToCart() {
     console.log('adding to cart', this.state.quantity)
     this.props.addToCart(
-      this.props.product,
+      this.props.product.id,
       this.state.quantity,
       false,
       this.props.userId

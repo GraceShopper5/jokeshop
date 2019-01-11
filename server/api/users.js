@@ -77,10 +77,10 @@ router.get('/:id/shopping-cart', async (req, res, next) => {
 
 router.put('/:id/shopping-cart', async (req, res, next) => {
   try {
-    const {product, quantity, overwrite} = req.body
+    const {productId, quantity, overwrite} = req.body
     const shoppingCart = await User.getUserShoppingCart(req.params.id)
     const [orderItem, wasCreated] = await OrderItem.findOrCreate({
-      where: {orderId: shoppingCart.id, productId: product.id}
+      where: {orderId: shoppingCart.id, productId}
     })
     if (!wasCreated) {
       orderItem.quantity = overwrite
