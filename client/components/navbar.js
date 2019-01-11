@@ -76,7 +76,7 @@ const Navbar = ({handleClick, isLoggedIn, classes, firstName}) => (
           invisible={false}
           classes={{badge: classes.badge}}
         >
-          <IconButton color="inherit">
+          <IconButton color="inherit" component={Link} to="/shopping-cart">
             <ShoppingCart />
           </IconButton>
         </Badge>
