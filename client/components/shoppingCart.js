@@ -43,15 +43,23 @@ const styles = theme => ({
 class ShoppingCart extends Component {
   constructor(props) {
     super(props)
-    this.state = {cart: []}
+    this.grabCartIfNeeded = this.grabCartIfNeeded.bind(this)
+  }
+
+  grabCartIfNeeded() {
+    if (this.props.user.id && !this.props.cart) {
+      this.props.fetchCart(this.props.user.id)
+    }
   }
   componentDidMount() {
-    const cart = this.props.fetchCart(this.props.user.id)
-    this.setState({cart})
+    this.grabCartIfNeeded()
+  }
+  componentDidUpdate() {
+    this.grabCartIfNeeded()
   }
   render() {
     // console.log('this.props.cart', this.props.cart)
-    const {classes, cart} = this.props
+    const {classes} = this.props
     return (
       <div className={classes.root}>
         <List component="nav">
@@ -67,8 +75,8 @@ class ShoppingCart extends Component {
                         </ListItemIcon>
                         <ListItemText primary="Drafts" />
                     </ListItem> */}
-          {this.state.cart && this.state.cart.length ? (
-            cart.map(product =>
+          {this.props.cart && this.props.cart.length ? (
+            this.props.cart.map(product => (
               //   <ListItem button key={product.id}>
               //     <Card className={classes.product}>
               //       <CardMedia
@@ -101,8 +109,8 @@ class ShoppingCart extends Component {
               //     </Card>
               //   </ListItem>
               // ))}
-              console.log('hi')
-            )
+              <h1 key={product.id}>something here</h1>
+            ))
           ) : (
             <h1>nothing here</h1>
           )}
@@ -113,7 +121,7 @@ class ShoppingCart extends Component {
 }
 
 const mapStateToProps = state => {
-  return {cart: state.shoppingCart.cart, user: state.user}
+  return {cart: state.shoppingCart.cart.products, user: state.user}
 }
 
 const mapDispatchToProps = dispatch => {
