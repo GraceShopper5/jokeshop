@@ -43,12 +43,13 @@ const styles = theme => ({
 class ShoppingCart extends Component {
   constructor(props) {
     super(props)
+    this.state = {cart: []}
   }
-
+  componentDidMount() {
+    const cart = this.props.fetchCart(this.props.user.id)
+    this.setState({cart})
+  }
   render() {
-    if (this.props.userId) {
-      this.props.fetchCart(this.props.userId)
-    }
     // console.log('this.props.cart', this.props.cart)
     const {classes, cart} = this.props
     return (
@@ -66,43 +67,45 @@ class ShoppingCart extends Component {
                         </ListItemIcon>
                         <ListItemText primary="Drafts" />
                     </ListItem> */}
-          {cart
-            ? cart.map(product =>
-                //   <ListItem button key={product.id}>
-                //     <Card className={classes.product}>
-                //       <CardMedia
-                //         className={classes.cardMedia}
-                //         image={product.imageUrl}
-                //         title={product.name}
-                //       />
-                //       <CardContent className={classes.cardContent}>
-                //         <Typography gutterBottom variant="h5" component="h2">
-                //           {product.name}
-                //         </Typography>
-                //         <Typography>{product.description}</Typography>
-                //       </CardContent>
-                //       <CardActions>
-                //         <Button
-                //           size="small"
-                //           color="primary"
-                //           component={Link}
-                //           to={`/products/${product.id}`}
-                //         >
-                //           View
-                //         </Button>
-                //         <Button size="small" color="primary">
-                //           Purchase
-                //         </Button>
-                //         <Button size="small" color="primary">
-                //           Add to Cart
-                //         </Button>
-                //       </CardActions>
-                //     </Card>
-                //   </ListItem>
-                // ))}
-                console.log('hi')
-              )
-            : null}
+          {this.state.cart && this.state.cart.length ? (
+            cart.map(product =>
+              //   <ListItem button key={product.id}>
+              //     <Card className={classes.product}>
+              //       <CardMedia
+              //         className={classes.cardMedia}
+              //         image={product.imageUrl}
+              //         title={product.name}
+              //       />
+              //       <CardContent className={classes.cardContent}>
+              //         <Typography gutterBottom variant="h5" component="h2">
+              //           {product.name}
+              //         </Typography>
+              //         <Typography>{product.description}</Typography>
+              //       </CardContent>
+              //       <CardActions>
+              //         <Button
+              //           size="small"
+              //           color="primary"
+              //           component={Link}
+              //           to={`/products/${product.id}`}
+              //         >
+              //           View
+              //         </Button>
+              //         <Button size="small" color="primary">
+              //           Purchase
+              //         </Button>
+              //         <Button size="small" color="primary">
+              //           Add to Cart
+              //         </Button>
+              //       </CardActions>
+              //     </Card>
+              //   </ListItem>
+              // ))}
+              console.log('hi')
+            )
+          ) : (
+            <h1>nothing here</h1>
+          )}
         </List>
       </div>
     )
@@ -110,8 +113,7 @@ class ShoppingCart extends Component {
 }
 
 const mapStateToProps = state => {
-  console.log('yooo', state.shoppingCart.cart)
-  return {cart: state.shoppingCart.cart, userId: state.user.id}
+  return {cart: state.shoppingCart.cart, user: state.user}
 }
 
 const mapDispatchToProps = dispatch => {
