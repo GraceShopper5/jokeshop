@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import {fetchSingleProduct, addToCart} from '../store'
 import {connect} from 'react-redux'
+import {Link, withRouter} from 'react-router-dom'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import Button from '@material-ui/core/Button'
@@ -53,6 +54,7 @@ class SingleProduct extends Component {
     this.setState({[name]: event.target.value})
   }
   handleAddToCart() {
+    console.log('adding to cart', this.state.quantity)
     this.props.addToCart(
       this.props.product,
       this.state.quantity,
@@ -126,13 +128,15 @@ const mapDispatchToProps = dispatch => {
       dispatch(fetchSingleProduct(productId))
     },
     addToCart: (product, quantity, overwrite, userId) =>
-      addToCart(product, quantity, overwrite, userId)
+      dispatch(addToCart(product, quantity, overwrite, userId))
   }
 }
 
 SingleProduct.propTypes = {
   classes: PropTypes.object.isRequired
 }
-export default withStyles(styles)(
-  connect(mapStateToProps, mapDispatchToProps)(SingleProduct)
+export default withRouter(
+  connect(mapStateToProps, mapDispatchToProps)(
+    withStyles(styles)(SingleProduct)
+  )
 )
