@@ -21,8 +21,15 @@ const getCart = cart => ({type: GET_CART, cart})
  */
 export const fetchCart = userId => async dispatch => {
   try {
-    const {data: cart} = await axios.get(`/api/users/${userId}/shopping-cart`)
-    dispatch(getCart(cart))
+    if (userId) {
+      const {data: cart} = await axios.get(`/api/users/${userId}/shopping-cart`)
+      dispatch(getCart(cart))
+    } else {
+      const cartFromStorage = JSON.parse(localStorage.getItem('cart'))
+      const cart = cartFromStorage || {}
+      console.log('got cart from local storage', cart)
+      dispatch(getCart(cart))
+    }
   } catch (err) {
     console.error(err)
   }
@@ -35,12 +42,22 @@ export const addToCart = (
   userId
 ) => async dispatch => {
   try {
-    const {data: cart} = await axios.put(`/api/users/${userId}/shopping-cart`, {
-      productId,
-      quantity,
-      overwrite
-    })
-    dispatch(getCart(cart))
+    if (userId) {
+      const {data: cart} = await axios.put(
+        `/api/users/${userId}/shopping-cart`,
+        {
+          productId,
+          quantity,
+          overwrite
+        }
+      )
+      dispatch(getCart(cart))
+    } else {
+      const cartFromStorage = JSON.parse(localStorage.getItem('cart'))
+      const cart = cartFromStorage || {}
+      console.log('got cart from local storage', cart)
+      dispatch(getCart(cart))
+    }
   } catch (err) {
     console.error(err)
   }

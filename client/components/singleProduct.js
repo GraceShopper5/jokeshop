@@ -53,14 +53,30 @@ class SingleProduct extends Component {
   handleChange = name => event => {
     this.setState({[name]: event.target.value})
   }
-  handleAddToCart(evt) {
-    evt.preventDefault()
-    this.props.addToCart(
-      this.props.product.id,
-      this.state.quantity,
-      false,
-      this.props.userId
-    )
+  handleAddToCart() {
+    const {userId, product, addToCart: atc} = this.props
+    if (userId) {
+      atc(product.id, this.state.quantity, false, userId)
+    } else {
+      const cartFromStorage = JSON.parse(localStorage.getItem('cart'))
+      const cart = cartFromStorage || {products: []}
+      const cartItem = cart.products.filter(item => item.id === product.id)
+      const restOfCart = cart.products.filter(item => item.id !== product.id)
+      if (cartItem.length) {
+        cartItem[0].OrderItem.quantity += Number(this.state.quantity)
+        restOfCart.push(cartItem[0])
+      } else {
+        const newCartItem = {
+          id: product.id,
+          OrderItem: {quantity: Number(this.state.quantity)}
+        }
+        restOfCart.push(newCartItem)
+      }
+      cart.products = restOfCart
+
+      localStorage.setItem('cart', JSON.stringify(cart))
+      atc(product.id, this.state.quantity, false, userId)
+    }
   }
   render() {
     const {classes, product} = this.props

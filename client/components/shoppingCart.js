@@ -44,7 +44,7 @@ const styles = theme => ({
 class ShoppingCart extends Component {
   render() {
     // console.log('this.props.cart', this.props.cart)
-    const {classes} = this.props
+    const {classes,cart,userId} = this.props
     return (
       <div className={classes.root} id="shopping-cart">
         <table>
@@ -56,10 +56,10 @@ class ShoppingCart extends Component {
               <td>Quantity</td>
               <td>Total Price</td>
             </tr>
-            {this.props.cart
-              ? this.props.cart.map(product => (
+            {cart
+              ? cart.map(product => (
                   <OrderItem
-                    userId={this.props.user.id}
+                    userId={userId}
                     key={product.id}
                     product={product}
                   />
@@ -112,7 +112,7 @@ class ShoppingCart extends Component {
 }
 
 const mapStateToProps = state => {
-  return {cart: state.shoppingCart.products, user: state.user}
+  return {cart: state.shoppingCart.products, userId: state.user.id}
 }
 
 const mapDispatchToProps = dispatch => {

@@ -34,9 +34,20 @@ const styles = theme => ({
   }
 })
 
-const getCartItemSum = cartItems => {
+const getUserCartItemSum = cartItems => {
   return cartItems.reduce((accum, item) => accum + item.OrderItem.quantity, 0)
 }
+// const getGuestCartItemSum = () => {
+//   const cartFromStorage = JSON.parse(localStorage.getItem('cart'))
+//   const cart = cartFromStorage || {}
+//   let total = 0
+//   for (let productId in cart) {
+//     if (cart.hasOwnProperty(productId)) {
+//       total += cart[productId].quantity
+//     }
+//   }
+//   return total
+// }
 
 const Navbar = ({handleClick, isLoggedIn, classes, firstName, cartItems}) => (
   <div>
@@ -62,16 +73,6 @@ const Navbar = ({handleClick, isLoggedIn, classes, firstName, cartItems}) => (
             <Button onClick={handleClick} className={classes.button}>
               Logout
             </Button>
-            <Badge
-              color="secondary"
-              badgeContent={cartItems ? getCartItemSum(cartItems) : 0}
-              invisible={false}
-              classes={{badge: classes.badge}}
-            >
-              <IconButton color="inherit" component={Link} to="/shopping-cart">
-                <ShoppingCart />
-              </IconButton>
-            </Badge>
           </div>
         ) : (
           <div>
@@ -82,8 +83,28 @@ const Navbar = ({handleClick, isLoggedIn, classes, firstName, cartItems}) => (
             <Button className={classes.button} component={Link} to="signup">
               Sign Up{' '}
             </Button>
+            {/* <Badge
+              color="secondary"
+              badgeContent={getGuestCartItemSum()}
+              invisible={false}
+              classes={{badge: classes.badge}}
+            >
+              <IconButton color="inherit" component={Link} to="/shopping-cart">
+                <ShoppingCart />
+              </IconButton>
+            </Badge> */}
           </div>
         )}
+        <Badge
+          color="secondary"
+          badgeContent={cartItems ? getUserCartItemSum(cartItems) : 0}
+          invisible={false}
+          classes={{badge: classes.badge}}
+        >
+          <IconButton color="inherit" component={Link} to="/shopping-cart">
+            <ShoppingCart />
+          </IconButton>
+        </Badge>
       </Toolbar>
     </AppBar>
 
