@@ -42,22 +42,6 @@ const styles = theme => ({
 })
 
 class ShoppingCart extends Component {
-  constructor(props) {
-    super(props)
-    this.grabCartIfNeeded = this.grabCartIfNeeded.bind(this)
-  }
-
-  grabCartIfNeeded() {
-    if (this.props.user.id && !this.props.cart) {
-      this.props.fetchCart(this.props.user.id)
-    }
-  }
-  componentDidMount() {
-    this.grabCartIfNeeded()
-  }
-  componentDidUpdate() {
-    this.grabCartIfNeeded()
-  }
   render() {
     // console.log('this.props.cart', this.props.cart)
     const {classes} = this.props
@@ -128,14 +112,14 @@ class ShoppingCart extends Component {
 }
 
 const mapStateToProps = state => {
-  return {cart: state.shoppingCart.cart.products, user: state.user}
+  return {cart: state.shoppingCart.products, user: state.user}
 }
 
 const mapDispatchToProps = dispatch => {
   return {
-    fetchCart: userId => {
-      dispatch(fetchCart(userId))
-    }
+    // fetchCart: userId => {
+    //   dispatch(fetchCart(userId))
+    // }
   }
 }
 

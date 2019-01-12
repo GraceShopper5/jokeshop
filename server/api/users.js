@@ -89,8 +89,9 @@ router.put('/:id/shopping-cart', async (req, res, next) => {
     } else {
       orderItem.quantity = Number(quantity)
     }
-    const updatedOrderItem = await orderItem.save()
-    res.json(updatedOrderItem)
+    await orderItem.save()
+    const updatedShoppingCart = await User.getUserShoppingCart(req.params.id)
+    res.json(updatedShoppingCart)
   } catch (err) {
     next(err)
   }

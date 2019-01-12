@@ -34,7 +34,11 @@ const styles = theme => ({
   }
 })
 
-const Navbar = ({handleClick, isLoggedIn, classes, firstName}) => (
+const getCartItemSum = cartItems => {
+  return cartItems.reduce((accum, item) => accum + item.OrderItem.quantity, 0)
+}
+
+const Navbar = ({handleClick, isLoggedIn, classes, firstName, cartItems}) => (
   <div>
     <AppBar position="static" className={classes.appBar}>
       <Toolbar>
@@ -58,6 +62,16 @@ const Navbar = ({handleClick, isLoggedIn, classes, firstName}) => (
             <Button onClick={handleClick} className={classes.button}>
               Logout
             </Button>
+            <Badge
+              color="secondary"
+              badgeContent={cartItems ? getCartItemSum(cartItems) : 0}
+              invisible={false}
+              classes={{badge: classes.badge}}
+            >
+              <IconButton color="inherit" component={Link} to="/shopping-cart">
+                <ShoppingCart />
+              </IconButton>
+            </Badge>
           </div>
         ) : (
           <div>
@@ -70,16 +84,6 @@ const Navbar = ({handleClick, isLoggedIn, classes, firstName}) => (
             </Button>
           </div>
         )}
-        <Badge
-          color="secondary"
-          badgeContent={4}
-          invisible={false}
-          classes={{badge: classes.badge}}
-        >
-          <IconButton color="inherit" component={Link} to="/shopping-cart">
-            <ShoppingCart />
-          </IconButton>
-        </Badge>
       </Toolbar>
     </AppBar>
 
@@ -94,7 +98,8 @@ const Navbar = ({handleClick, isLoggedIn, classes, firstName}) => (
 const mapState = state => {
   return {
     isLoggedIn: !!state.user.id,
-    firstName: state.user.firstName
+    firstName: state.user.firstName,
+    cartItems: state.shoppingCart.products
   }
 }
 

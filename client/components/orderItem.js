@@ -30,6 +30,7 @@ class OrderItem extends Component {
   handleAddToCart(event) {
     // console.log('productid', this.props.product.id)
     // console.log('quantity', event.target.value)
+    event.preventDefault()
     this.props.addToCart(
       this.props.product.id,
       event.target.value,
@@ -62,7 +63,7 @@ class OrderItem extends Component {
 }
 
 OrderItem.propTypes = {
-  classes: PropTypes.object.isRequired
+  // classes: PropTypes.object.isRequired
 }
 
 export default withRouter(connect(null, mdp)(OrderItem))

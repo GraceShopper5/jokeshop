@@ -9,7 +9,7 @@ const GET_CART = 'GET_CART'
 /**
  * INITIAL STATE
  */
-const initialState = {cart: []}
+const initialCart = []
 
 /**
  * ACTION CREATORS
@@ -49,10 +49,10 @@ export const addToCart = (
 /**
  * REDUCER
  */
-export default function(state = initialState, action) {
+export default function(state = initialCart, action) {
   switch (action.type) {
     case GET_CART:
-      return {...state, cart: action.cart}
+      return action.cart
     default:
       return state
   }

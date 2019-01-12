@@ -44,7 +44,7 @@ const styles = theme => ({
 class SingleProduct extends Component {
   constructor(props) {
     super(props)
-    this.state = {quantity: ''}
+    this.state = {quantity: 1}
     this.handleAddToCart = this.handleAddToCart.bind(this)
   }
   componentDidMount() {
@@ -53,8 +53,8 @@ class SingleProduct extends Component {
   handleChange = name => event => {
     this.setState({[name]: event.target.value})
   }
-  handleAddToCart() {
-    console.log('adding to cart', this.state.quantity)
+  handleAddToCart(evt) {
+    evt.preventDefault()
     this.props.addToCart(
       this.props.product.id,
       this.state.quantity,
