@@ -67,7 +67,7 @@ class SingleProduct extends Component {
         restOfCart.push(cartItem[0])
       } else {
         const newCartItem = {
-          id: product.id,
+          ...product,
           OrderItem: {quantity: Number(this.state.quantity)}
         }
         restOfCart.push(newCartItem)
