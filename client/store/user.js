@@ -1,6 +1,7 @@
 import axios from 'axios'
 import history from '../history'
 import {fetchCart} from './shoppingCart'
+import {fetchOrderHistory} from './orderHistory'
 
 /**
  * ACTION TYPES
@@ -28,6 +29,7 @@ export const me = () => async dispatch => {
     const user = res.data || defaultUser
     dispatch(getUser(user))
     dispatch(fetchCart(user.id))
+    dispatch(fetchOrderHistory(user.id))
   } catch (err) {
     console.error(err)
   }
