@@ -17,6 +17,7 @@ import Select from '@material-ui/core/Select'
 import OutlinedInput from '@material-ui/core/OutlinedInput'
 
 import {withStyles} from '@material-ui/core/styles'
+import ReviewForm from './reviewForm'
 
 const styles = theme => ({
   icon: {
@@ -165,10 +166,7 @@ class SingleProduct extends Component {
           </Button>
         ) : null}
         {this.state.showReviewForm ? (
-          <div>
-            <h1>hi</h1>
-            <Button onClick={this.toggleReviewForm}>Cancel</Button>
-          </div>
+          <ReviewForm toggleReviewForm={this.toggleReviewForm} />
         ) : null}
       </div>
     )
