@@ -1,9 +1,9 @@
-import React, { Component } from 'react'
-import { Link, withRouter } from 'react-router-dom'
-import { purchaseCart } from '../store'
-import { connect } from 'react-redux'
+import React, {Component} from 'react'
+import {Link, withRouter} from 'react-router-dom'
+import {purchaseCart} from '../store'
+import {connect} from 'react-redux'
 import PropTypes from 'prop-types'
-import { withStyles } from '@material-ui/core/styles'
+import {withStyles} from '@material-ui/core/styles'
 import Button from '@material-ui/core/Button'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
@@ -15,13 +15,13 @@ import CardActions from '@material-ui/core/CardActions'
 import CardContent from '@material-ui/core/CardContent'
 import CardMedia from '@material-ui/core/CardMedia'
 import Typography from '@material-ui/core/Typography'
-import { Elements, StripeProvider } from 'react-stripe-elements'
+import {Elements, StripeProvider} from 'react-stripe-elements'
 import CheckoutForm from './CheckoutForm'
 
 // import InboxIcon from '@material-ui/icons/Inbox';
 // import DraftsIcon from '@material-ui/icons/Drafts';
-import { OrderItem } from './index'
-import { isNullOrUndefined } from 'util'
+import {OrderItem} from './index'
+import {isNullOrUndefined} from 'util'
 
 const styles = theme => ({
   root: {
@@ -48,7 +48,7 @@ const styles = theme => ({
 class ShoppingCart extends Component {
   render() {
     // console.log('this.props.cart', this.props.cart)
-    const { classes, cart, userId, purchaseCart: pc } = this.props
+    const {classes, cart, userId, purchaseCart: pc} = this.props
     return (
       <div className={classes.root} id="shopping-cart">
         <table>
@@ -62,12 +62,12 @@ class ShoppingCart extends Component {
             </tr>
             {cart
               ? cart.map(product => (
-                <OrderItem
-                  userId={userId}
-                  key={product.id}
-                  product={product}
-                />
-              ))
+                  <OrderItem
+                    userId={userId}
+                    key={product.id}
+                    product={product}
+                  />
+                ))
               : null}
           </tbody>
         </table>
@@ -87,7 +87,7 @@ class ShoppingCart extends Component {
 }
 
 const mapStateToProps = state => {
-  return { cart: state.shoppingCart.products, userId: state.user.id }
+  return {cart: state.shoppingCart.products, userId: state.user.id}
 }
 
 const mapDispatchToProps = dispatch => {

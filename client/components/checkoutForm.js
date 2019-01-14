@@ -1,38 +1,45 @@
-import React, { Component } from 'react'
-import { CardElement, injectStripe } from 'react-stripe-elements'
+import React, {Component} from 'react'
+import {CardElement, injectStripe} from 'react-stripe-elements'
+import {connect} from 'react-redux'
 
 class CheckoutForm extends Component {
-    constructor(props) {
-        super(props)
-        this.state = { complete: false }
-        this.submit = this.submit.bind(this)
+  constructor(props) {
+    super(props)
+    this.state = {complete: false}
+    this.submit = this.submit.bind(this)
+  }
+
+  async submit(ev) {
+    let {token} = await this.props.stripe.createToken({name: 'Name'})
+    let response = await fetch(`/api/users/${this.props.userId}/charge`, {
+      method: 'POST',
+      headers: {'Content-Type': 'text/plain'},
+      body: token.id
+    })
+
+    if (response.ok) {
+      console.log('Purchase Complete!')
+      this.setState({complete: true})
     }
+  }
 
-    async submit(ev) {
-        let { token } = await this.props.stripe.createToken({ name: 'Name' })
-        let response = await fetch('/charge', {
-            method: 'POST',
-            headers: { 'Content-Type': 'text/plain' },
-            body: token.id
-        })
+  render() {
+    if (this.state.complete) return <h1>Purchase Complete</h1>
 
-        if (response.ok) {
-            console.log('Purchase Complete!')
-            this.setState({ complete: true })
-        }
-    }
-
-    render() {
-        if (this.state.complete) return <h1>Purchase Complete</h1>
-
-        return (
-            <div className="checkout">
-                <p>Would you like to complete the purchase?</p>
-                <CardElement />
-                <button onClick={this.submit}>Send</button>
-            </div>
-        )
-    }
+    return (
+      <div className="checkout">
+        <p>Would you like to complete the purchase?</p>
+        <CardElement />
+        <button onClick={this.submit}>Send</button>
+      </div>
+    )
+  }
 }
 
-export default injectStripe(CheckoutForm)
+const mapStateToProps = state => {
+    return {userId: state.user.id}
+  }
+
+export default injectStripe(
+    connect(mapStateToProps)(CheckoutForm)
+)

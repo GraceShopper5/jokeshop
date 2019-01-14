@@ -1,5 +1,7 @@
 const router = require('express').Router()
-const {User, Order, OrderItem} = require('../db/models')
+const { User, Order, OrderItem } = require('../db/models')
+const stripe = require('stripe')('sk_test_4eC39HqLyjWDarjtT1zdp7dc')
+// const stripe = require("stripe")("pk_test_sgAizXIzyMiJy3bIT2C5N5D6");
 module.exports = router
 
 router.get('/', async (req, res, next) => {
@@ -77,10 +79,10 @@ router.get('/:id/shopping-cart', async (req, res, next) => {
 
 router.put('/:id/shopping-cart', async (req, res, next) => {
   try {
-    const {productId, quantity, overwrite, purchase} = req.body
+    const { productId, quantity, overwrite, purchase } = req.body
     const shoppingCart = await User.getUserShoppingCart(req.params.id)
     if (purchase) {
-      await shoppingCart.update({isPurchased: true})
+      await shoppingCart.update({ isPurchased: true })
       shoppingCart.products.forEach(product => {
         product.OrderItem.pricePaid = product.currentPrice
         product.OrderItem.save()
@@ -89,7 +91,7 @@ router.put('/:id/shopping-cart', async (req, res, next) => {
       res.json(newShoppingCart)
     } else {
       const [orderItem, wasCreated] = await OrderItem.findOrCreate({
-        where: {orderId: shoppingCart.id, productId}
+        where: { orderId: shoppingCart.id, productId }
       })
       if (!wasCreated) {
         orderItem.quantity = overwrite
@@ -103,6 +105,44 @@ router.put('/:id/shopping-cart', async (req, res, next) => {
       res.json(updatedShoppingCart)
     }
   } catch (err) {
+    next(err)
+  }
+})
+
+router.post('/:id/charge', async (req, res, next) => {
+  try {
+    let cart
+    if (
+      (req.session.userId && req.session.userId === Number(req.params.id)) ||
+      req.session.userIsAdmin
+    ) {
+      console.log('did this run? before user')
+      const user = await User.findById(req.session.userId)
+      console.log('did this run? after user')
+      console.log('user', user)
+      cart = await user.getShoppingCart()
+      console.log('did this run? after cart')
+      console.log('cart', cart)
+    }
+    // } else {
+    //   cart = JSON.parse(localStorage.getItem('cart'))
+    // }
+
+    // console.log('cart', cart.products)
+    // // const amount = ;
+
+    // let { status } = await stripe.charges.create({
+    //   amount: 2000,
+    //   currency: 'usd',
+    //   description: 'An example charge',
+    //   source: req.body
+    // })
+    // console.log('body', req.body)
+    // res.json({ status })
+    // console.log('status', status)
+    res.json('hello')
+  } catch (err) {
+    res.status(500)
     next(err)
   }
 })

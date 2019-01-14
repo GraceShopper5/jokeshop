@@ -6,14 +6,11 @@ const session = require('express-session')
 const passport = require('passport')
 const SequelizeStore = require('connect-session-sequelize')(session.Store)
 const db = require('./db')
-const sessionStore = new SequelizeStore({ db })
+const sessionStore = new SequelizeStore({db})
 const PORT = process.env.PORT || 8080
 const app = express()
 const socketio = require('socket.io')
 module.exports = app
-const { User } = require('./db/models/user')
-const stripe = require('stripe')('sk_test_4eC39HqLyjWDarjtT1zdp7dc')
-// const stripe = require("stripe")("pk_test_sgAizXIzyMiJy3bIT2C5N5D6");
 
 // This is a global Mocha hook, used for resource cleanup.
 // Otherwise, Mocha v4+ never quits after tests.
@@ -49,7 +46,7 @@ const createApp = () => {
 
   // body parsing middleware
   app.use(express.json())
-  app.use(express.urlencoded({ extended: true }))
+  app.use(express.urlencoded({extended: true}))
   app.use(require('body-parser').text())
 
   // compression middleware
@@ -70,34 +67,6 @@ const createApp = () => {
   // auth and api routes
   app.use('/auth', require('./auth'))
   app.use('/api', require('./api'))
-
-  // stripe middleware
-  app.post('/charge', async (req, res) => {
-    try {
-      let cart
-      if (req.session.userId && req.session.userId === Number(req.params.id)) {
-        const user = await User.findById(req.session.userId)
-        cart = await user.getShoppingCart()
-      } else {
-        cart = JSON.parse(localStorage.getItem('cart'))
-      }
-
-      console.log('cart', cart)
-      // const amount = ;
-
-      let { status } = await stripe.charges.create({
-        amount: 2000,
-        currency: 'usd',
-        description: 'An example charge',
-        source: req.body
-      })
-      console.log('body', req.body)
-      res.json({ status })
-      console.log('status', status)
-    } catch (err) {
-      res.status(500).end()
-    }
-  })
 
   // static file-serving middleware
   app.use(express.static(path.join(__dirname, '..', 'public')))
