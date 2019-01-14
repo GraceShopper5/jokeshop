@@ -37,9 +37,7 @@ class CheckoutForm extends Component {
 }
 
 const mapStateToProps = state => {
-    return {userId: state.user.id}
-  }
+  return {userId: state.user.id}
+}
 
-export default injectStripe(
-    connect(mapStateToProps)(CheckoutForm)
-)
+export default injectStripe(connect(mapStateToProps)(CheckoutForm))
