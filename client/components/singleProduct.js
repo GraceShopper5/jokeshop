@@ -1,5 +1,10 @@
 import React, {Component} from 'react'
-import {fetchSingleProduct, addToCart} from '../store'
+import {
+  fetchSingleProduct,
+  addToCart,
+  fetchProductReviews,
+  submitReview
+} from '../store'
 import {connect} from 'react-redux'
 import {Link, withRouter} from 'react-router-dom'
 import PropTypes from 'prop-types'
@@ -17,6 +22,7 @@ import Select from '@material-ui/core/Select'
 import OutlinedInput from '@material-ui/core/OutlinedInput'
 
 import {withStyles} from '@material-ui/core/styles'
+import ReviewForm from './reviewForm'
 
 const styles = theme => ({
   icon: {
@@ -44,73 +50,145 @@ const styles = theme => ({
 class SingleProduct extends Component {
   constructor(props) {
     super(props)
-    this.state = {quantity: ''}
+    this.state = {quantity: 1, showReviewForm: false}
+
     this.handleAddToCart = this.handleAddToCart.bind(this)
+    this.wasItemPurchased = this.wasItemPurchased.bind(this)
+    this.toggleReviewForm = this.toggleReviewForm.bind(this)
+    this.handleReviewSubmission = this.handleReviewSubmission.bind(this)
+    this.wasReviewWritten = this.wasReviewWritten.bind(this)
   }
   componentDidMount() {
     this.props.fetchSingleProduct(this.props.match.params.productId)
+    this.props.fetchProductReviews(this.props.match.params.productId)
   }
+
   handleChange = name => event => {
     this.setState({[name]: event.target.value})
   }
   handleAddToCart() {
-    console.log('adding to cart', this.state.quantity)
-    this.props.addToCart(
-      this.props.product,
-      this.state.quantity,
-      false,
-      this.props.userId
-    )
+    const {userId, product, addToCart: atc} = this.props
+    atc(product, this.state.quantity, false, userId)
   }
+
+  wasItemPurchased() {
+    // using nested loop rather than nested forEach in order to be able to break out early if found
+    for (let order of this.props.orderHistory) {
+      for (let product of order.products) {
+        if (product.id === this.props.product.id) {
+          return true
+        }
+      }
+    }
+    return false
+  }
+
+  wasReviewWritten() {
+    const {product, userId} = this.props
+    if (product && product.reviews) {
+      for (let review of product.reviews) {
+        if (review.Review.userId === userId) {
+          return true
+        }
+      }
+      return false
+    }
+  }
+
+  toggleReviewForm() {
+    this.setState(prevState => {
+      return {
+        showReviewForm: !prevState.showReviewForm
+      }
+    })
+  }
+  handleReviewSubmission(reviewContent) {
+    this.props.submitReview(this.props.product.id, reviewContent)
+  }
+
   render() {
-    const {classes, product} = this.props
-    // console.log(product)
+    const {classes, product, userId, orderHistory} = this.props
     return (
-      <Grid container justify="center">
-        <Card className={classes.card}>
-          <CardMedia
-            className={classes.cardMedia}
-            image={`../../${product.imageUrl}`}
-            title={product.name}
-          />
-          <CardContent className={classes.cardContent}>
-            <Typography gutterBottom variant="h5" component="h2">
-              {product.name}
-            </Typography>
-            <Typography>{product.description}</Typography>
-          </CardContent>
-          <CardActions>
-            <Button size="small" color="primary">
-              Purchase
-            </Button>
-            <Button size="small" color="primary" onClick={this.handleAddToCart}>
-              Add to Cart
-            </Button>
-            <FormControl variant="outlined" className={classes.formControl}>
-              <InputLabel htmlFor="outlined-quantity">Quantity</InputLabel>
-              <Select
-                native
-                value={this.state.quantity}
-                onChange={this.handleChange('quantity')}
-                input={
-                  <OutlinedInput
-                    name="quantity"
-                    labelWidth={5}
-                    id="outlined-quantity"
-                  />
-                }
+      <div>
+        <Grid container justify="center">
+          <Card className={classes.card}>
+            <CardMedia
+              className={classes.cardMedia}
+              image={`../../${product.imageUrl}`}
+              title={product.name}
+            />
+            <CardContent className={classes.cardContent}>
+              <Typography gutterBottom variant="h5" component="h2">
+                {product.name}
+              </Typography>
+              <Typography>{product.description}</Typography>
+            </CardContent>
+            <CardActions>
+              <Button size="small" color="primary">
+                Purchase
+              </Button>
+              <Button
+                size="small"
+                color="primary"
+                onClick={this.handleAddToCart}
               >
-                <option value="" />
-                <option value={1}>1</option>
-                <option value={2}>2</option>
-                <option value={3}>3</option>
-                <option value={4}>4</option>
-                <option value={5}>5</option>
-              </Select>
-            </FormControl>
-          </CardActions>
-        </Card>
-      </Grid>
+                Add to Cart
+              </Button>
+              <FormControl variant="outlined" className={classes.formControl}>
+                <InputLabel htmlFor="outlined-quantity">Quantity</InputLabel>
+                <Select
+                  native
+                  value={this.state.quantity}
+                  onChange={this.handleChange('quantity')}
+                  input={
+                    <OutlinedInput
+                      name="quantity"
+                      labelWidth={5}
+                      id="outlined-quantity"
+                    />
+                  }
+                >
+                  <option value="" />
+                  <option value={1}>1</option>
+                  <option value={2}>2</option>
+                  <option value={3}>3</option>
+                  <option value={4}>4</option>
+                  <option value={5}>5</option>
+                </Select>
+              </FormControl>
+            </CardActions>
+          </Card>
+        </Grid>
+
+        {orderHistory && userId ? (
+          <Button
+            disabled={
+              !this.wasItemPurchased() ||
+              this.wasReviewWritten() ||
+              this.state.showReviewForm
+            }
+            onClick={this.toggleReviewForm}
+          >
+            Write a Review
+          </Button>
+        ) : null}
+        {this.state.showReviewForm ? (
+          <ReviewForm
+            toggleReviewForm={this.toggleReviewForm}
+            handleReviewSubmission={this.handleReviewSubmission}
+          />
+        ) : null}
+        <Typography>Reviews</Typography>
+        {product.reviews && product.reviews.length ? (
+          product.reviews.map(review => (
+            <li key={`${review.Review.userId}-${review.Review.productId}`}>
+              {review.Review.content} by {review.firstName}
+            </li>
+          ))
+        ) : (
+          <Typography>No reviews yet!</Typography>
+        )}
+      </div>
     )
   }
 }
@@ -118,17 +196,19 @@ class SingleProduct extends Component {
 const mapStateToProps = state => {
   return {
     product: state.product.selectedProduct,
-    userId: state.user.id
+    userId: state.user.id,
+    orderHistory: state.orderHistory
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
-    fetchSingleProduct: productId => {
-      dispatch(fetchSingleProduct(productId))
-    },
+    fetchSingleProduct: productId => dispatch(fetchSingleProduct(productId)),
+    fetchProductReviews: productId => dispatch(fetchProductReviews(productId)),
     addToCart: (product, quantity, overwrite, userId) =>
-      dispatch(addToCart(product, quantity, overwrite, userId))
+      dispatch(addToCart(product, quantity, overwrite, userId)),
+    submitReview: (productId, content) =>
+      dispatch(submitReview(productId, content))
   }
 }
 

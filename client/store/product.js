@@ -6,7 +6,8 @@ import history from '../history'
  */
 const GET_PRODUCTS = 'GET_PRODUCTS'
 const GET_SINGLE_PRODUCT = 'GET_SINGLE_PRODUCT'
-// const REMOVE_USER = 'REMOVE_USER'
+const GET_PRODUCT_REVIEWS = 'GET_PRODUCT_REVIEWS'
+const ADD_REVIEW = 'ADD_REVIEW'
 
 /**
  * INITIAL STATE
@@ -18,6 +19,8 @@ const initialState = {products: [], selectedProduct: {}}
  */
 const getProducts = products => ({type: GET_PRODUCTS, products})
 const getSingleProduct = product => ({type: GET_SINGLE_PRODUCT, product})
+const getProductReviews = reviews => ({type: GET_PRODUCT_REVIEWS, reviews})
+const addReview = review => ({type: ADD_REVIEW, review})
 /**
  * THUNK CREATORS
  */
@@ -39,17 +42,28 @@ export const fetchSingleProduct = productId => async dispatch => {
   }
 }
 
-// export const addToCart = async (product, quantity, overwrite, userId) => {
-//   try {
-//     await axios.put(`/api/users/${userId}/shopping-cart`, {
-//       product,
-//       quantity,
-//       overwrite
-//     })
-//   } catch (err) {
-//     console.error(err)
-//   }
-// }
+export const fetchProductReviews = productId => async dispatch => {
+  try {
+    const {data: reviews} = await axios.get(
+      `/api/products/${productId}/reviews`
+    )
+    dispatch(getProductReviews(reviews))
+  } catch (err) {
+    console.error(err)
+  }
+}
+
+export const submitReview = (productId, content) => async dispatch => {
+  try {
+    const {data: review} = await axios.post(
+      `/api/products/${productId}/reviews`,
+      {content}
+    )
+    dispatch(addReview(review))
+  } catch (err) {
+    console.error(err)
+  }
+}
 
 /**
  * REDUCER
@@ -60,6 +74,21 @@ export default function(state = initialState, action) {
       return {...state, products: action.products}
     case GET_SINGLE_PRODUCT:
       return {...state, selectedProduct: action.product}
+    case GET_PRODUCT_REVIEWS: {
+      const reviews = action.reviews
+      return {...state, selectedProduct: {...state.selectedProduct, reviews}}
+    }
+    case ADD_REVIEW: {
+      const newReview = action.review
+      const existingReviews = state.selectedProduct.reviews || []
+      return {
+        ...state,
+        selectedProduct: {
+          ...state.selectedProduct,
+          reviews: [...existingReviews, newReview]
+        }
+      }
+    }
     default:
       return state
   }

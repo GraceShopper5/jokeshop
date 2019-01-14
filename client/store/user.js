@@ -1,5 +1,7 @@
 import axios from 'axios'
 import history from '../history'
+import {fetchCart} from './shoppingCart'
+import {fetchOrderHistory} from './orderHistory'
 
 /**
  * ACTION TYPES
@@ -24,7 +26,10 @@ const removeUser = () => ({type: REMOVE_USER})
 export const me = () => async dispatch => {
   try {
     const res = await axios.get('/auth/me')
-    dispatch(getUser(res.data || defaultUser))
+    const user = res.data || defaultUser
+    dispatch(getUser(user))
+    dispatch(fetchCart(user.id))
+    dispatch(fetchOrderHistory(user.id))
   } catch (err) {
     console.error(err)
   }
@@ -47,6 +52,7 @@ export const auth = data => async dispatch => {
 
   try {
     dispatch(getUser(res.data))
+    dispatch(fetchCart(res.data.id))
     history.push('/')
   } catch (dispatchOrHistoryErr) {
     console.error(dispatchOrHistoryErr)
@@ -57,6 +63,9 @@ export const logout = () => async dispatch => {
   try {
     await axios.post('/auth/logout')
     dispatch(removeUser())
+    //clear the cart in local storage when you log out:
+    localStorage.setItem('cart', JSON.stringify({products: []}))
+    dispatch(fetchCart(null))
     history.push('/')
   } catch (err) {
     console.error(err)
