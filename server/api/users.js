@@ -77,7 +77,14 @@ router.get('/:id/shopping-cart', async (req, res, next) => {
 
 router.put('/:id/shopping-cart', async (req, res, next) => {
   try {
-    const {productId, quantity, overwrite, purchase, purchaseDate, addressId} = req.body
+    const {
+      productId,
+      quantity,
+      overwrite,
+      purchase,
+      purchaseDate,
+      addressId
+    } = req.body
     const shoppingCart = await User.getUserShoppingCart(req.params.id)
     if (purchase) {
       await shoppingCart.update({isPurchased: true, purchaseDate, addressId})
@@ -109,10 +116,16 @@ router.put('/:id/shopping-cart', async (req, res, next) => {
 
 router.post('/:id/addresses', async (req, res, next) => {
   try {
-    const { streetAddress, city, state, zipCode } = req.body
-    const address = await Address.create({ streetAddress, city, state, zipCode, userId: req.params.id })
+    const {streetAddress, city, state, zipCode} = req.body
+    const address = await Address.create({
+      streetAddress,
+      city,
+      state,
+      zipCode,
+      userId: req.params.id
+    })
     res.json(address)
-  } catch(err) {
+  } catch (err) {
     next(err)
   }
 })

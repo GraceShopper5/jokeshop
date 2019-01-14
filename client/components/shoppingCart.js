@@ -35,18 +35,26 @@ const styles = theme => ({
 class ShoppingCart extends Component {
   constructor() {
     super()
-    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this)
   }
 
   async handleSubmit(event) {
-    event.preventDefault();
-    const { streetAddress, city, state, zipCode } = event.target
+    event.preventDefault()
+    const {streetAddress, city, state, zipCode} = event.target
     if (this.props.userId) {
-      const {data: address} = await axios.post(`api/users/${this.props.userId}/addresses`, { streetAddress: streetAddress.value, city: city.value, state: state.value, zipCode: zipCode.value });
-      this.props.purchaseCart(this.props.userId, address.id);
+      const {data: address} = await axios.post(
+        `api/users/${this.props.userId}/addresses`,
+        {
+          streetAddress: streetAddress.value,
+          city: city.value,
+          state: state.value,
+          zipCode: zipCode.value
+        }
+      )
+      this.props.purchaseCart(this.props.userId, address.id)
     } else {
       // const address = await axios.post('/address', { streetAddress: streetAddress.value, city: city.value, state: state.value, zipCode: zipCode.value });
-      console.log('guest checkout doesn\'t work yet');
+      console.log("guest checkout doesn't work yet")
     }
   }
 
@@ -76,20 +84,20 @@ class ShoppingCart extends Component {
                 : null}
             </tbody>
           </table>
-          <Button onClick={() => pc(userId)}>Buy Items</Button>
+          {/* <Button onClick={() => pc(userId)}>Buy Items</Button> */}
         </div>
         <div>
           <form onSubmit={this.handleSubmit}>
             <h2>Checkout</h2>
             <label>Street Address</label>
-            <input name='streetAddress' type='text'></input>
+            <input name="streetAddress" type="text" />
             <label>City</label>
-            <input name='city' type='text'></input>
+            <input name="city" type="text" />
             <label>State</label>
-            <input name='state' type='text'></input>
+            <input name="state" type="text" />
             <label>ZIP Code</label>
-            <input name='zipCode' type='text'></input>
-            <button type='submit'>Buy Items</button>
+            <input name="zipCode" type="text" />
+            <button type="submit">Buy Items</button>
           </form>
         </div>
       </div>
