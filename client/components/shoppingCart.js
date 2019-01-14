@@ -6,6 +6,8 @@ import PropTypes from 'prop-types'
 import {withStyles} from '@material-ui/core/styles'
 import Button from '@material-ui/core/Button'
 
+import axios from 'axios'
+
 import {OrderItem} from './index'
 
 const styles = theme => ({
@@ -31,33 +33,65 @@ const styles = theme => ({
 })
 
 class ShoppingCart extends Component {
+  constructor() {
+    super()
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  async handleSubmit(event) {
+    event.preventDefault();
+    const { streetAddress, city, state, zipCode } = event.target
+    if (this.props.userId) {
+      const {data: address} = await axios.post(`api/users/${this.props.userId}/addresses`, { streetAddress: streetAddress.value, city: city.value, state: state.value, zipCode: zipCode.value });
+      this.props.purchaseCart(this.props.userId, address.id);
+    } else {
+      // const address = await axios.post('/address', { streetAddress: streetAddress.value, city: city.value, state: state.value, zipCode: zipCode.value });
+      console.log('guest checkout doesn\'t work yet');
+    }
+  }
+
   render() {
-    // console.log('this.props.cart', this.props.cart)
     const {classes, cart, userId, purchaseCart: pc} = this.props
     return (
-      <div className={classes.root} id="shopping-cart">
-        <table>
-          <tbody>
-            <tr>
-              <td>Image</td>
-              <td>Name</td>
-              <td>Price</td>
-              <td>Quantity</td>
-              <td>Total Price</td>
-            </tr>
-            {cart
-              ? cart.map(product => (
-                  <OrderItem
-                    userId={userId}
-                    key={product.id}
-                    product={product}
-                    isPurchased={false}
-                  />
-                ))
-              : null}
-          </tbody>
-        </table>
-        <Button onClick={() => pc(userId)}>Buy Items</Button>
+      <div>
+        <div className={classes.root} id="shopping-cart">
+          <table>
+            <tbody>
+              <tr>
+                <td>Image</td>
+                <td>Name</td>
+                <td>Price</td>
+                <td>Quantity</td>
+                <td>Total Price</td>
+              </tr>
+              {cart
+                ? cart.map(product => (
+                    <OrderItem
+                      userId={userId}
+                      key={product.id}
+                      product={product}
+                      isPurchased={false}
+                    />
+                  ))
+                : null}
+            </tbody>
+          </table>
+          <Button onClick={() => pc(userId)}>Buy Items</Button>
+        </div>
+        <div>
+          <form onSubmit={this.handleSubmit}>
+            <h2>Checkout</h2>
+            <label>Street Address</label>
+            <input name='streetAddress' type='text'></input>
+            <label>City</label>
+            <input name='city' type='text'></input>
+            <label>State</label>
+            <input name='state' type='text'></input>
+            <label>ZIP Code</label>
+            <input name='zipCode' type='text'></input>
+            <button type='submit'>Buy Items</button>
+          </form>
+        </div>
       </div>
     )
   }
@@ -69,8 +103,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    purchaseCart: userId => {
-      dispatch(purchaseCart(userId))
+    purchaseCart: (userId, addressId) => {
+      dispatch(purchaseCart(userId, addressId))
     }
   }
 }
