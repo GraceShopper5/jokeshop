@@ -5,7 +5,6 @@ import history from '../history'
  * ACTION TYPES
  */
 const GET_ORDER_HISTORY = 'GET_ORDER_HISTORY'
-const CREATE_NEW_ORDER_FROM_CART = 'CREATE_NEW_ORDER_FROM_CART'
 
 /**
  * INITIAL STATE
@@ -18,10 +17,6 @@ const initialOrderHistory = []
 const getOrderHistory = orderHistory => ({
   type: GET_ORDER_HISTORY,
   orderHistory
-})
-const createNewOrderFromCart = cart => ({
-  type: CREATE_NEW_ORDER_FROM_CART,
-  cart
 })
 
 /**

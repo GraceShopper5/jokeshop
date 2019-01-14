@@ -77,21 +77,27 @@ router.get('/:id/shopping-cart', async (req, res, next) => {
 
 router.put('/:id/shopping-cart', async (req, res, next) => {
   try {
-    const {productId, quantity, overwrite} = req.body
+    const {productId, quantity, overwrite, purchase} = req.body
     const shoppingCart = await User.getUserShoppingCart(req.params.id)
-    const [orderItem, wasCreated] = await OrderItem.findOrCreate({
-      where: {orderId: shoppingCart.id, productId}
-    })
-    if (!wasCreated) {
-      orderItem.quantity = overwrite
-        ? Number(quantity)
-        : orderItem.quantity + Number(quantity)
+    if (purchase) {
+      await shoppingCart.update({isPurchased: true})
+      const newShoppingCart = await Order.createUserOrder(req.params.id, false)
+      res.json(newShoppingCart)
     } else {
-      orderItem.quantity = Number(quantity)
+      const [orderItem, wasCreated] = await OrderItem.findOrCreate({
+        where: {orderId: shoppingCart.id, productId}
+      })
+      if (!wasCreated) {
+        orderItem.quantity = overwrite
+          ? Number(quantity)
+          : orderItem.quantity + Number(quantity)
+      } else {
+        orderItem.quantity = Number(quantity)
+      }
+      await orderItem.save()
+      const updatedShoppingCart = await User.getUserShoppingCart(req.params.id)
+      res.json(updatedShoppingCart)
     }
-    await orderItem.save()
-    const updatedShoppingCart = await User.getUserShoppingCart(req.params.id)
-    res.json(updatedShoppingCart)
   } catch (err) {
     next(err)
   }

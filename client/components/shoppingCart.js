@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {Link, withRouter} from 'react-router-dom'
-import {fetchCart, addToCart} from '../store'
+import {purchaseCart} from '../store'
 import {connect} from 'react-redux'
 import PropTypes from 'prop-types'
 import {withStyles} from '@material-ui/core/styles'
@@ -15,9 +15,11 @@ import CardActions from '@material-ui/core/CardActions'
 import CardContent from '@material-ui/core/CardContent'
 import CardMedia from '@material-ui/core/CardMedia'
 import Typography from '@material-ui/core/Typography'
+
 // import InboxIcon from '@material-ui/icons/Inbox';
 // import DraftsIcon from '@material-ui/icons/Drafts';
 import {OrderItem} from './index'
+import {isNullOrUndefined} from 'util'
 
 const styles = theme => ({
   root: {
@@ -44,7 +46,7 @@ const styles = theme => ({
 class ShoppingCart extends Component {
   render() {
     // console.log('this.props.cart', this.props.cart)
-    const {classes,cart,userId} = this.props
+    const {classes, cart, userId, purchaseCart: pc} = this.props
     return (
       <div className={classes.root} id="shopping-cart">
         <table>
@@ -67,6 +69,7 @@ class ShoppingCart extends Component {
               : null}
           </tbody>
         </table>
+        <Button onClick={() => pc(userId)}>Buy Items</Button>
         {/* <List component="nav">
           {this.props.cart && this.props.cart.length ? (
             this.props.cart.map(product => (
@@ -117,9 +120,9 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    // fetchCart: userId => {
-    //   dispatch(fetchCart(userId))
-    // }
+    purchaseCart: userId => {
+      dispatch(purchaseCart(userId))
+    }
   }
 }
 

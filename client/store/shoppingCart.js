@@ -5,6 +5,7 @@ import history from '../history'
  * ACTION TYPES
  */
 const GET_CART = 'GET_CART'
+const CLEAR_CART = 'CLEAR_CART'
 
 /**
  * INITIAL STATE
@@ -15,6 +16,7 @@ const initialCart = []
  * ACTION CREATORS
  */
 const getCart = cart => ({type: GET_CART, cart})
+const clearCart = () => ({type: CLEAR_CART})
 
 /**
  * THUNK CREATORS
@@ -81,6 +83,15 @@ export const addToCart = (
   }
 }
 
+export const purchaseCart = userId => async dispatch => {
+  if (userId) {
+    const newEmptyCart = await axios.put(`/api/users/${userId}/shopping-cart`, {
+      purchase: true
+    })
+    dispatch(getCart(newEmptyCart))
+  }
+}
+
 /**
  * REDUCER
  */
@@ -88,6 +99,8 @@ export default function(state = initialCart, action) {
   switch (action.type) {
     case GET_CART:
       return action.cart
+    case CLEAR_CART:
+      return []
     default:
       return state
   }
