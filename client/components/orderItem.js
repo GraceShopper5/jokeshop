@@ -47,16 +47,16 @@ class OrderItem extends Component {
         <td>{name}</td>
         <td>{currentPrice}</td>
         <td>
-          {
-            this.props.isPurchased
-            ? <div>{OrderItem.quantity}</div>
-            : <select
-                defaultValue={OrderItem.quantity}
-                onChange={this.handleAddToCart}
-              >
-                {this.buildOptions(10)}
-              </select>
-          }
+          {this.props.isPurchased ? (
+            <div>{OrderItem.quantity}</div>
+          ) : (
+            <select
+              defaultValue={OrderItem.quantity}
+              onChange={this.handleAddToCart}
+            >
+              {this.buildOptions(10)}
+            </select>
+          )}
         </td>
         <td>{currentPrice * OrderItem.quantity}</td>
       </tr>
