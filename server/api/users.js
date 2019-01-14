@@ -81,6 +81,10 @@ router.put('/:id/shopping-cart', async (req, res, next) => {
     const shoppingCart = await User.getUserShoppingCart(req.params.id)
     if (purchase) {
       await shoppingCart.update({isPurchased: true})
+      shoppingCart.products.forEach(product => {
+        product.OrderItem.pricePaid = product.currentPrice
+        product.OrderItem.save()
+      })
       const newShoppingCart = await Order.createUserOrder(req.params.id, false)
       res.json(newShoppingCart)
     } else {
