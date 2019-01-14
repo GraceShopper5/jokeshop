@@ -68,28 +68,29 @@ class SingleProduct extends Component {
   }
   handleAddToCart() {
     const {userId, product, addToCart: atc} = this.props
-    if (userId) {
-      atc(product.id, this.state.quantity, false, userId)
-    } else {
-      const cartFromStorage = JSON.parse(localStorage.getItem('cart'))
-      const cart = cartFromStorage || {products: []}
-      const cartItem = cart.products.filter(item => item.id === product.id)
-      const restOfCart = cart.products.filter(item => item.id !== product.id)
-      if (cartItem.length) {
-        cartItem[0].OrderItem.quantity += Number(this.state.quantity)
-        restOfCart.push(cartItem[0])
-      } else {
-        const newCartItem = {
-          ...product,
-          OrderItem: {quantity: Number(this.state.quantity)}
-        }
-        restOfCart.push(newCartItem)
-      }
-      cart.products = restOfCart
+    atc(product, this.state.quantity, false, userId)
+    // if (userId) {
+    //   atc(product, this.state.quantity, false, userId)
+    // } else {
+    //   const cartFromStorage = JSON.parse(localStorage.getItem('cart'))
+    //   const cart = cartFromStorage || {products: []}
+    //   const cartItem = cart.products.filter(item => item.id === product.id)
+    //   const restOfCart = cart.products.filter(item => item.id !== product.id)
+    //   if (cartItem.length) {
+    //     cartItem[0].OrderItem.quantity += Number(this.state.quantity)
+    //     restOfCart.push(cartItem[0])
+    //   } else {
+    //     const newCartItem = {
+    //       ...product,
+    //       OrderItem: {quantity: Number(this.state.quantity)}
+    //     }
+    //     restOfCart.push(newCartItem)
+    //   }
+    //   cart.products = restOfCart
 
-      localStorage.setItem('cart', JSON.stringify(cart))
-      atc(product.id, this.state.quantity, false, userId)
-    }
+    //   localStorage.setItem('cart', JSON.stringify(cart))
+    //   atc(product.id, this.state.quantity, false, userId)
+    // }
   }
 
   wasItemPurchased() {
@@ -107,7 +108,6 @@ class SingleProduct extends Component {
   wasReviewWritten() {
     const {product, userId} = this.props
     if (product && product.reviews) {
-      console.dir(product)
       for (let review of product.reviews) {
         if (review.Review.userId === userId) {
           return true
@@ -130,7 +130,6 @@ class SingleProduct extends Component {
 
   render() {
     const {classes, product, userId, orderHistory} = this.props
-    console.log(this.wasReviewWritten())
     return (
       <div>
         <Grid container justify="center">
