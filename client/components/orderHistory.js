@@ -2,10 +2,15 @@ import React, {Component} from 'react'
 import {Link, withRouter} from 'react-router-dom'
 import {connect} from 'react-redux'
 import PropTypes from 'prop-types'
+import {fetchOrderHistory} from '../store'
 
 import {OrderItem} from './index'
 
 class OrderHistory extends Component {
+  componentDidMount() {
+    this.props.fetchOrderHistory(this.props.userId)
+  }
+
   render() {
     const {orderHistory, userId} = this.props
     return (
@@ -43,4 +48,8 @@ const mapStateToProps = state => {
   return {orderHistory: state.orderHistory, userId: state.user.id}
 }
 
-export default withRouter(connect(mapStateToProps)(OrderHistory))
+const mapDispatchToProps = dispatch => ({
+  fetchOrderHistory: (userId) => dispatch(fetchOrderHistory(userId))
+})
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(OrderHistory))
