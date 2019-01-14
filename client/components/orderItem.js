@@ -32,7 +32,7 @@ class OrderItem extends Component {
     // console.log('quantity', event.target.value)
     event.preventDefault()
     this.props.addToCart(
-      this.props.product.id,
+      this.props.product,
       event.target.value,
       true,
       this.props.userId

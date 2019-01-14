@@ -36,7 +36,7 @@ export const fetchCart = userId => async dispatch => {
 }
 
 export const addToCart = (
-  productId,
+  product,
   quantity,
   overwrite,
   userId
@@ -46,7 +46,7 @@ export const addToCart = (
       const {data: cart} = await axios.put(
         `/api/users/${userId}/shopping-cart`,
         {
-          productId,
+          productId: product.id,
           quantity,
           overwrite
         }
@@ -54,8 +54,26 @@ export const addToCart = (
       dispatch(getCart(cart))
     } else {
       const cartFromStorage = JSON.parse(localStorage.getItem('cart'))
-      const cart = cartFromStorage || {}
-      console.log('got cart from local storage', cart)
+      const cart = cartFromStorage || {products: []}
+      const cartItem = cart.products.filter(item => item.id === product.id)
+      const restOfCart = cart.products.filter(item => item.id !== product.id)
+      if (cartItem.length) {
+        if (overwrite) {
+          cartItem[0].OrderItem.quantity = Number(quantity)
+        } else {
+          cartItem[0].OrderItem.quantity += Number(quantity)
+        }
+        restOfCart.push(cartItem[0])
+      } else {
+        const newCartItem = {
+          ...product,
+          OrderItem: {quantity: Number(quantity)}
+        }
+        restOfCart.push(newCartItem)
+      }
+      cart.products = restOfCart
+
+      localStorage.setItem('cart', JSON.stringify(cart))
       dispatch(getCart(cart))
     }
   } catch (err) {
