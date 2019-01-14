@@ -17,30 +17,38 @@ class ReviewForm extends Component {
     super(props)
     this.state = {reviewContent: ''}
     this.handleChange = this.handleChange.bind(this)
+    this.handleSubmit = this.handleSubmit.bind(this)
   }
   handleChange(evt) {
     this.setState({
       [evt.target.name]: evt.target.value
     })
   }
+  handleSubmit(evt) {
+    evt.preventDefault()
+    this.props.handleReviewSubmission(this.state.reviewContent)
+    this.props.toggleReviewForm()
+  }
   render() {
     const {classes, toggleReviewForm} = this.props
     return (
       <div>
-        <TextField
-          label="Review Content"
-          name="reviewContent"
-          placeholder="Enter your review here"
-          multiline
-          className={classes.textField}
-          margin="normal"
-          onChange={this.handleChange}
-          value={this.state.reviewContent}
-        />
-        <div>
-          <Button>Submit</Button>
-          <Button onClick={toggleReviewForm}>Cancel</Button>
-        </div>
+        <form onSubmit={this.handleSubmit}>
+          <TextField
+            label="Review Content"
+            name="reviewContent"
+            placeholder="Enter your review here"
+            multiline
+            className={classes.textField}
+            margin="normal"
+            onChange={this.handleChange}
+            value={this.state.reviewContent}
+          />
+          <div>
+            <Button type="submit">Submit</Button>
+            <Button onClick={toggleReviewForm}>Cancel</Button>
+          </div>
+        </form>
       </div>
     )
   }

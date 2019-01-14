@@ -17,8 +17,8 @@ User.hasMany(Order)
 Order.belongsToMany(Product, {through: 'OrderItem'})
 Product.belongsToMany(Order, {through: 'OrderItem'})
 
-User.belongsToMany(Product, {through: 'reviews'})
-Product.belongsToMany(User, {through: 'reviews'})
+User.belongsToMany(Product, {through: 'Review'})
+Product.belongsToMany(User, {through: 'Review'})
 //
 
 /**

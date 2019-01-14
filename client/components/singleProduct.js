@@ -1,5 +1,10 @@
 import React, {Component} from 'react'
-import {fetchSingleProduct, addToCart} from '../store'
+import {
+  fetchSingleProduct,
+  addToCart,
+  fetchProductReviews,
+  submitReview
+} from '../store'
 import {connect} from 'react-redux'
 import {Link, withRouter} from 'react-router-dom'
 import PropTypes from 'prop-types'
@@ -50,9 +55,12 @@ class SingleProduct extends Component {
     this.handleAddToCart = this.handleAddToCart.bind(this)
     this.wasItemPurchased = this.wasItemPurchased.bind(this)
     this.toggleReviewForm = this.toggleReviewForm.bind(this)
+    this.handleReviewSubmission = this.handleReviewSubmission.bind(this)
+    this.wasReviewWritten = this.wasReviewWritten.bind(this)
   }
   componentDidMount() {
     this.props.fetchSingleProduct(this.props.match.params.productId)
+    this.props.fetchProductReviews(this.props.match.params.productId)
   }
 
   handleChange = name => event => {
@@ -85,16 +93,30 @@ class SingleProduct extends Component {
   }
 
   wasItemPurchased() {
-    let itemPurchased = false
-    this.props.orderHistory.forEach(order => {
-      order.products.forEach(product => {
+    // using nested loop rather than nested forEach in order to be able to break out early if found
+    for (let order of this.props.orderHistory) {
+      for (let product of order.products) {
         if (product.id === this.props.product.id) {
-          itemPurchased = true
+          return true
         }
-      })
-    })
-    return itemPurchased
+      }
+    }
+    return false
   }
+
+  wasReviewWritten() {
+    const {product, userId} = this.props
+    if (product && product.reviews) {
+      console.dir(product)
+      for (let review of product.reviews) {
+        if (review.Review.userId === userId) {
+          return true
+        }
+      }
+      return false
+    }
+  }
+
   toggleReviewForm() {
     this.setState(prevState => {
       return {
@@ -102,9 +124,13 @@ class SingleProduct extends Component {
       }
     })
   }
+  handleReviewSubmission(reviewContent) {
+    this.props.submitReview(this.props.product.id, reviewContent)
+  }
 
   render() {
-    const {classes, product} = this.props
+    const {classes, product, userId, orderHistory} = this.props
+    console.log(this.wasReviewWritten())
     return (
       <div>
         <Grid container justify="center">
@@ -157,17 +183,34 @@ class SingleProduct extends Component {
           </Card>
         </Grid>
 
-        {this.props.orderHistory && this.props.userId ? (
+        {orderHistory && userId ? (
           <Button
-            disabled={!this.wasItemPurchased() || this.state.showReviewForm}
+            disabled={
+              !this.wasItemPurchased() ||
+              this.wasReviewWritten() ||
+              this.state.showReviewForm
+            }
             onClick={this.toggleReviewForm}
           >
             Write a Review
           </Button>
         ) : null}
         {this.state.showReviewForm ? (
-          <ReviewForm toggleReviewForm={this.toggleReviewForm} />
+          <ReviewForm
+            toggleReviewForm={this.toggleReviewForm}
+            handleReviewSubmission={this.handleReviewSubmission}
+          />
         ) : null}
+        <Typography>Reviews</Typography>
+        {product.reviews && product.reviews.length ? (
+          product.reviews.map(review => (
+            <li key={`${review.Review.userId}-${review.Review.productId}`}>
+              {review.Review.content} by {review.firstName}
+            </li>
+          ))
+        ) : (
+          <Typography>No reviews yet!</Typography>
+        )}
       </div>
     )
   }
@@ -184,8 +227,11 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     fetchSingleProduct: productId => dispatch(fetchSingleProduct(productId)),
+    fetchProductReviews: productId => dispatch(fetchProductReviews(productId)),
     addToCart: (product, quantity, overwrite, userId) =>
-      dispatch(addToCart(product, quantity, overwrite, userId))
+      dispatch(addToCart(product, quantity, overwrite, userId)),
+    submitReview: (productId, content) =>
+      dispatch(submitReview(productId, content))
   }
 }
 

@@ -1,12 +1,10 @@
 const Sequelize = require('sequelize')
 const db = require('../db')
 
-const Review = db.define('review', {
+const Review = db.define('Review', {
   content: {
-    type: Sequelize.TEXT
-  },
-  images: {
-    type: Sequelize.ARRAY(Sequelize.STRING)
+    type: Sequelize.TEXT,
+    allowNull: false
   }
 })
 
