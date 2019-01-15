@@ -1,5 +1,6 @@
 const router = require('express').Router()
-const {User, Order, OrderItem, Address} = require('../db/models')
+const {User, Order, OrderItem, Address, Product} = require('../db/models')
+const stripe = require('stripe')('sk_test_4eC39HqLyjWDarjtT1zdp7dc')
 module.exports = router
 
 router.get('/', async (req, res, next) => {
@@ -126,6 +127,58 @@ router.post('/:id/addresses', async (req, res, next) => {
     })
     res.json(address)
   } catch (err) {
+    next(err)
+  }
+})
+
+router.post('/charge', async (req, res, next) => {
+  let items, thisOrder, cart
+  try {
+    const products = await Product.findAll()
+    if (
+      (req.session.userId && req.session.userId === req.userId) ||
+      req.session.userIsAdmin
+    ) {
+      thisOrder = await Order.findOne({
+        where: {
+          userId: req.session.userId,
+          isPurchased: false
+        }
+      })
+      items = await OrderItem.findAll({where: {orderId: thisOrder.id}})
+      console.log(products)
+    } else {
+      cart = JSON.parse(localStorage.getItem('cart').products)
+      thisOrder = await Order.create()
+      items = cart.map(elem => {
+        return {
+          pricePaid: products.filter(item => item.id === elem.productId)[0]
+            .currentPrice,
+          quantity: elem.quantity,
+          orderId: thisOrder.id,
+          productId: elem.productId
+        }
+      })
+      await OrderItem.bulkCreate(items)
+    }
+    const totalCost = items.reduce((acc, cur) => {
+      const curItem = products.filter(item => item.id === cur.productId)
+      acc += cur.quantity * curItem[0].currentPrice
+      return acc
+    }, 0)
+
+    console.log('cart', cart.products)
+    // const amount = ;
+
+    let {status} = await stripe.charges.create({
+      amount: totalCost / 100,
+      currency: 'usd',
+      description: `JokeShop Order ${thisOrder.id}`,
+      source: req.body
+    })
+    res.json({status})
+  } catch (err) {
+    res.status(500)
     next(err)
   }
 })

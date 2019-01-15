@@ -5,6 +5,8 @@ import {connect} from 'react-redux'
 import PropTypes from 'prop-types'
 import {withStyles} from '@material-ui/core/styles'
 import Button from '@material-ui/core/Button'
+import {Elements, StripeProvider} from 'react-stripe-elements'
+import CheckoutForm from './checkoutForm'
 
 import axios from 'axios'
 
@@ -40,6 +42,14 @@ class ShoppingCart extends Component {
 
   async handleSubmit(event) {
     event.preventDefault()
+    let {token} = await this.props.stripe.createToken({name: 'Name'})
+    const data = await axios.post(`/api/users/charge`, {
+      token: token.id,
+      userId: this.props.userId
+    })
+
+    if (data.ok) console.log('Purchase Complete!')
+
     const {streetAddress, city, state, zipCode} = event.target
     if (this.props.userId) {
       const {data: address} = await axios.post(
@@ -92,7 +102,7 @@ class ShoppingCart extends Component {
           {/* <Button onClick={() => pc(userId)}>Buy Items</Button> */}
         </div>
         <div>
-          <form onSubmit={this.handleSubmit}>
+          <form>
             <h2>Checkout</h2>
             <label>Street Address</label>
             <input name="streetAddress" type="text" />
@@ -102,7 +112,17 @@ class ShoppingCart extends Component {
             <input name="state" type="text" />
             <label>ZIP Code</label>
             <input name="zipCode" type="text" />
-            <button type="submit">Buy Items</button>
+            <br />
+            <br />
+            {/* <button type="submit">Buy Items</button> */}
+            <StripeProvider apiKey="pk_test_TYooMQauvdEDq54NiTphI7jx">
+              <div className="example">
+                <h1>Credit Card Payment</h1>
+                <Elements>
+                  <CheckoutForm props={this.handleSubmit} />
+                </Elements>
+              </div>
+            </StripeProvider>
           </form>
         </div>
       </div>
