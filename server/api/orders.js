@@ -15,14 +15,15 @@ router.get('/', async (req, res, next) => {
   }
 })
 
-// router.put('/',async (req,res,next) => {
-//   try {
-//     const {}
-//     const newGuestOrder = await Order.create({})
-//   } catch (err) {
-//     next(err)
-//   }
-// })
+router.post('/', async (req, res, next) => {
+  try {
+    const {purchaseDate, addressId} = req.body
+    const newGuestOrder = await Order.create({purchaseDate, addressId})
+    res.json(newGuestOrder)
+  } catch (err) {
+    next(err)
+  }
+})
 
 router.get('/:id', async (req, res, next) => {
   try {
