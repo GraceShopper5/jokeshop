@@ -91,7 +91,6 @@ class ShoppingCart extends Component {
                 : null}
             </tbody>
           </table>
-          {/* <Button onClick={() => pc(userId)}>Buy Items</Button> */}
         </div>
         <div>
           <form onSubmit={this.handleSubmit}>

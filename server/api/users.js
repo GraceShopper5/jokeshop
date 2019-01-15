@@ -41,12 +41,6 @@ router.get('/:id/order-history', async (req, res, next) => {
       (req.session.userId && req.session.userId === Number(req.params.id)) ||
       req.session.userIsAdmin
     ) {
-      // const orders = await Order.findAll({
-      //   where: {
-      //     userId: req.params.id,
-      //     isPurchased: true
-      //   }
-      // })
       const user = await User.findById(req.params.id)
       const orderHistory = await user.getOrderHistory()
       res.json(orderHistory)
