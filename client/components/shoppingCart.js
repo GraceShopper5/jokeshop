@@ -6,6 +6,8 @@ import PropTypes from 'prop-types'
 import {withStyles} from '@material-ui/core/styles'
 import Button from '@material-ui/core/Button'
 
+import CheckoutForm from './checkoutForm'
+
 import axios from 'axios'
 
 import {OrderItem} from './index'
@@ -105,6 +107,12 @@ class ShoppingCart extends Component {
             <button type="submit">Buy Items</button>
           </form>
         </div>
+
+        <CheckoutForm
+          name="Checkout"
+          description="Please enter your credit card information"
+          amount={1}
+        />
       </div>
     )
   }
