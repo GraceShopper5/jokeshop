@@ -29,6 +29,8 @@ export const fetchOrderHistory = userId => async dispatch => {
         `/api/users/${userId}/order-history`
       )
       dispatch(getOrderHistory(orderHistory))
+    } else {
+      dispatch(getOrderHistory([]))
     }
   } catch (err) {
     console.error(err)
