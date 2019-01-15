@@ -15,6 +15,15 @@ router.get('/', async (req, res, next) => {
   }
 })
 
+// router.put('/',async (req,res,next) => {
+//   try {
+//     const {}
+//     const newGuestOrder = await Order.create({})
+//   } catch (err) {
+//     next(err)
+//   }
+// })
+
 router.get('/:id', async (req, res, next) => {
   try {
     const order = await Order.findById(req.params.id)
@@ -51,11 +60,11 @@ router.get('/:id', async (req, res, next) => {
 // })
 
 //this is for a direct purchase (skipping the shopping cart)
-router.post('/', async (req, res, next) => {
-  try {
-    const newOrder = await Order.createUserOrder(req.session.userId, true)
-    res.json(newOrder)
-  } catch (err) {
-    next(err)
-  }
-})
+// router.post('/', async (req, res, next) => {
+//   try {
+//     const newOrder = await Order.createUserOrder(req.session.userId, true)
+//     res.json(newOrder)
+//   } catch (err) {
+//     next(err)
+//   }
+// })
