@@ -18,6 +18,18 @@ const initialCart = []
 const getCart = cart => ({type: GET_CART, cart})
 const clearCart = () => ({type: CLEAR_CART})
 
+// helper functions for thunk creators
+const getProductFromDB = async item => {
+  const {data: dbProduct} = await axios.get(`/api/products/${item.productId}`)
+  dbProduct.OrderItem = {pricePaid: null, quantity: item.quantity}
+  return dbProduct
+}
+const getCartProducts = async cart => {
+  const promisesForProducts = cart.map(getProductFromDB)
+  const cartProducts = await Promise.all(promisesForProducts)
+  return cartProducts
+}
+
 /**
  * THUNK CREATORS
  */
@@ -30,7 +42,12 @@ export const fetchCart = userId => async dispatch => {
       const cartFromStorage = JSON.parse(localStorage.getItem('cart'))
       const cart = cartFromStorage || {}
       console.log('got cart from local storage', cart)
-      dispatch(getCart(cart))
+
+      const cartProducts = await getCartProducts(cart)
+      console.log(cartProducts)
+
+      const cartForStore = {products: [...cartProducts]}
+      dispatch(getCart(cartForStore))
     }
   } catch (err) {
     console.error(err)
@@ -74,15 +91,16 @@ export const addToCart = (
         restOfCart.push(newCartItem)
       }
 
-      const getProductFromDB = async item => {
-        const {data: dbProduct} = await axios.get(
-          `/api/products/${item.productId}`
-        )
-        dbProduct.OrderItem = {pricePaid: null, quantity: item.quantity}
-        return dbProduct
-      }
-      const promisesForProducts = restOfCart.map(getProductFromDB)
-      const cartProducts = await Promise.all(promisesForProducts)
+      // const getProductFromDB = async item => {
+      //   const {data: dbProduct} = await axios.get(
+      //     `/api/products/${item.productId}`
+      //   )
+      //   dbProduct.OrderItem = {pricePaid: null, quantity: item.quantity}
+      //   return dbProduct
+      // }
+      // const promisesForProducts = restOfCart.map(getProductFromDB)
+      // const cartProducts = await Promise.all(promisesForProducts)
+      const cartProducts = await getCartProducts(restOfCart)
       console.log(cartProducts)
 
       const cartForStore = {products: [...cartProducts]}
