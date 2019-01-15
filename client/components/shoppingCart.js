@@ -34,6 +34,13 @@ class ShoppingCart extends Component {
     this.handleAddToCart = this.handleAddToCart.bind(this)
   }
 
+  getUserCartItemSum(cartItems) {
+    return cartItems.reduce(
+      (accum, item) => accum + item.currentPrice * item.OrderItem.quantity,
+      0
+    )
+  }
+
   buildOptions(n) {
     const arr = []
     for (let i = 1; i <= n; i++) {
@@ -124,6 +131,21 @@ class ShoppingCart extends Component {
                     </TableRow>
                   ))
                 : null}
+              <TableRow>
+                <TableCell />
+                <TableCell align="right" />
+                <TableCell align="right" />
+                <TableCell align="right" />
+                <TableCell align="right">
+                  <strong>
+                    ${this.props.cart
+                      ? (
+                          this.getUserCartItemSum(this.props.cart) / 100
+                        ).toFixed(2)
+                      : 0.0}
+                  </strong>
+                </TableCell>
+              </TableRow>
             </TableBody>
           </Table>
         </Paper>
