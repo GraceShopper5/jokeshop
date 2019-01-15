@@ -59,7 +59,15 @@ class ShoppingCart extends Component {
 
   async handleSubmit(event) {
     event.preventDefault()
+    if (this.props.cart.length === 0) {
+      alert('You have no items in your shopping cart!')
+      return
+    }
     const {streetAddress, city, state, zipCode} = event.target
+    if (!streetAddress.value || !city.value || !state.value || !zipCode.value) {
+      alert('Please fill in all fields!')
+      return
+    }
     if (this.props.userId) {
       const {data: address} = await axios.post(
         `api/users/${this.props.userId}/addresses`,
