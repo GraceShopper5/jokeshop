@@ -28,8 +28,6 @@ class OrderItem extends Component {
   }
 
   handleAddToCart(event) {
-    // console.log('productid', this.props.product.id)
-    // console.log('quantity', event.target.value)
     event.preventDefault()
     this.props.addToCart(
       this.props.product,
@@ -49,12 +47,16 @@ class OrderItem extends Component {
         <td>{name}</td>
         <td>{currentPrice}</td>
         <td>
-          <select
-            defaultValue={OrderItem.quantity}
-            onChange={this.handleAddToCart}
-          >
-            {this.buildOptions(10)}
-          </select>
+          {this.props.isPurchased ? (
+            <div>{OrderItem.quantity}</div>
+          ) : (
+            <select
+              defaultValue={OrderItem.quantity}
+              onChange={this.handleAddToCart}
+            >
+              {this.buildOptions(10)}
+            </select>
+          )}
         </td>
         <td>{currentPrice * OrderItem.quantity}</td>
       </tr>
@@ -62,8 +64,8 @@ class OrderItem extends Component {
   }
 }
 
-OrderItem.propTypes = {
-  // classes: PropTypes.object.isRequired
-}
+// OrderItem.propTypes = {
+//   classes: PropTypes.object.isRequired
+// }
 
 export default withRouter(connect(null, mdp)(OrderItem))
