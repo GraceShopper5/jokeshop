@@ -4,7 +4,7 @@ import StripeCheckout from 'react-stripe-checkout'
 
 // test
 const STRIPE_PUBLISHABLE = 'pk_test_sgAizXIzyMiJy3bIT2C5N5D6'
-const PAYMENT_SERVER_URL = 'http://localhost:8080'
+const PAYMENT_SERVER_URL = 'https://jokeshop.herokuapp.com/'
 
 // live
 // const STRIPE_PUBLISHABLE = 'pk_live_MY_PUBLISHABLE_KEY'
