@@ -19,10 +19,12 @@ router.post('/', async (req, res, next) => {
   try {
     const {streetAddress, city, state, zipCode} = req.body
     const [newAddress, wasCreated] = await Address.findOrCreate({
-      streetAddress,
-      city,
-      state,
-      zipCode
+      where: {
+        streetAddress,
+        city,
+        state,
+        zipCode
+      }
     })
     res.json(newAddress)
   } catch (err) {
