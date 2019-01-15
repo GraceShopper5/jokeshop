@@ -1,5 +1,5 @@
 import axios from 'axios'
-import history from '../history'
+// import history from '../history'
 
 /**
  * ACTION TYPES
@@ -56,27 +56,39 @@ export const addToCart = (
       dispatch(getCart(cart))
     } else {
       const cartFromStorage = JSON.parse(localStorage.getItem('cart'))
-      const cart = cartFromStorage || {products: []}
-      const cartItem = cart.products.filter(item => item.id === product.id)
-      const restOfCart = cart.products.filter(item => item.id !== product.id)
+      const cart = cartFromStorage || []
+      const cartItem = cart.filter(item => item.productId === product.id)
+      const restOfCart = cart.filter(item => item.productId !== product.id)
       if (cartItem.length) {
         if (overwrite) {
-          cartItem[0].OrderItem.quantity = Number(quantity)
+          cartItem[0].quantity = Number(quantity)
         } else {
-          cartItem[0].OrderItem.quantity += Number(quantity)
+          cartItem[0].quantity += Number(quantity)
         }
         restOfCart.push(cartItem[0])
       } else {
         const newCartItem = {
-          ...product,
-          OrderItem: {quantity: Number(quantity)}
+          productId: product.id,
+          quantity: Number(quantity)
         }
         restOfCart.push(newCartItem)
       }
-      cart.products = restOfCart
 
-      localStorage.setItem('cart', JSON.stringify(cart))
-      dispatch(getCart(cart))
+      const getProductFromDB = async item => {
+        const {data: dbProduct} = await axios.get(
+          `/api/products/${item.productId}`
+        )
+        dbProduct.OrderItem = {pricePaid: null, quantity: item.quantity}
+        return dbProduct
+      }
+      const promisesForProducts = restOfCart.map(getProductFromDB)
+      const cartProducts = await Promise.all(promisesForProducts)
+      console.log(cartProducts)
+
+      const cartForStore = {products: [...cartProducts]}
+      const cartForLocal = [...restOfCart]
+      localStorage.setItem('cart', JSON.stringify(cartForLocal))
+      dispatch(getCart(cartForStore))
     }
   } catch (err) {
     console.error(err)
