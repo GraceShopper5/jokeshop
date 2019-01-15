@@ -40,7 +40,7 @@ export const fetchCart = userId => async dispatch => {
       dispatch(getCart(cart))
     } else {
       const cartFromStorage = JSON.parse(localStorage.getItem('cart'))
-      const cart = cartFromStorage || {}
+      const cart = cartFromStorage || []
       console.log('got cart from local storage', cart)
 
       const cartProducts = await getCartProducts(cart)
