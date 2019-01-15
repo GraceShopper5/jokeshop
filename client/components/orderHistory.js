@@ -22,6 +22,14 @@ const styles = theme => ({
 })
 
 class OrderHistory extends Component {
+  getOrderSubtotal(orderItems) {
+    return orderItems.reduce(
+      (accum, item) =>
+        accum + item.OrderItem.pricePaid * item.OrderItem.quantity,
+      0
+    )
+  }
+
   render() {
     const {orderHistory, userId, classes} = this.props
     return (
@@ -72,6 +80,21 @@ class OrderHistory extends Component {
                     </TableCell>
                   </TableRow>
                 ))}
+                <TableRow>
+                  <TableCell />
+                  <TableCell align="right" />
+                  <TableCell align="right" />
+                  <TableCell align="right" />
+                  <TableCell align="right">
+                    <strong>
+                      ${order
+                        ? (this.getOrderSubtotal(order.products) / 100).toFixed(
+                            2
+                          )
+                        : 0.0}
+                    </strong>
+                  </TableCell>
+                </TableRow>
               </TableBody>
             </Table>
           </Paper>
