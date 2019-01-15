@@ -3,7 +3,7 @@ import {withRouter} from 'react-router-dom'
 import {connect} from 'react-redux'
 import {purchaseCart} from '../store'
 import {addToCart} from '../store'
-
+import history from '../history'
 import PropTypes from 'prop-types'
 import {withStyles} from '@material-ui/core/styles'
 import Table from '@material-ui/core/Table'
@@ -12,7 +12,6 @@ import TableCell from '@material-ui/core/TableCell'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
 import Paper from '@material-ui/core/Paper'
-
 import axios from 'axios'
 
 const styles = theme => ({
@@ -88,6 +87,7 @@ class ShoppingCart extends Component {
       })
       this.props.purchaseCart(null, guestAddress.id, this.props.cart)
     }
+    history.push('/confirmation')
   }
 
   render() {
