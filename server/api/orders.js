@@ -23,7 +23,6 @@ router.post('/', async (req, res, next) => {
       addressId,
       isPurchased: true
     })
-    console.log(products)
     const newOrderItems = await products.map(async product => {
       await newGuestOrder.addProduct(product.id, {
         through: {
@@ -32,10 +31,6 @@ router.post('/', async (req, res, next) => {
         }
       })
     })
-    // const newOrderItems = await newGuestOrder.addProducts(
-    //   products.map(product => product.id)
-    // )
-
     res.json({newGuestOrder, newOrderItems})
   } catch (err) {
     next(err)
@@ -46,10 +41,6 @@ router.get('/:id', async (req, res, next) => {
   try {
     const order = await Order.findById(req.params.id)
     const orderItems = await OrderItem.findAll({where: {orderId: order.id}})
-    //    {
-    //   include: [{model: OrderItem}],
-    //   where: {orderId: req.params.id}
-    // })
     if (
       (req.session.userId && req.session.userId === order.userId) ||
       req.session.userIsAdmin
@@ -62,27 +53,3 @@ router.get('/:id', async (req, res, next) => {
     next(err)
   }
 })
-
-// router.put('/:id', async (req, res, next) => {
-//   try {
-//     const existingOrderItem = await OrderItem.findOne({
-//       where: {
-//         productId: req.body.product.id,
-//         orderId: req.params.id
-//       }
-//     })
-//     res.json(newOrderItem)
-//   } catch (err) {
-//     next(err)
-//   }
-// })
-
-//this is for a direct purchase (skipping the shopping cart)
-// router.post('/', async (req, res, next) => {
-//   try {
-//     const newOrder = await Order.createUserOrder(req.session.userId, true)
-//     res.json(newOrder)
-//   } catch (err) {
-//     next(err)
-//   }
-// })
