@@ -1,9 +1,8 @@
 import React, {Component} from 'react'
-import {Link, withRouter} from 'react-router-dom'
+import {withRouter} from 'react-router-dom'
 import {connect} from 'react-redux'
 import {purchaseCart} from '../store'
 import {addToCart} from '../store'
-import Button from '@material-ui/core/Button'
 
 import PropTypes from 'prop-types'
 import {withStyles} from '@material-ui/core/styles'
@@ -150,18 +149,25 @@ class ShoppingCart extends Component {
           </Table>
         </Paper>
 
-        <div>
-          <form onSubmit={this.handleSubmit}>
-            <h2>Checkout</h2>
+        <div className="flex">
+          <form onSubmit={this.handleSubmit} id="checkout">
+            <h3>Checkout</h3>
             <label>Street Address</label>
-            <input name="streetAddress" type="text" />
+            <input
+              name="streetAddress"
+              type="text"
+              placeholder="5 Hanover Square"
+            />
             <label>City</label>
-            <input name="city" type="text" />
+            <input name="city" type="text" placeholder="New York" />
             <label>State</label>
-            <input name="state" type="text" />
+            <input name="state" type="text" placeholder="NY" />
             <label>ZIP Code</label>
-            <input name="zipCode" type="text" />
-            <button type="submit">Buy Items</button>
+            <input name="zipCode" type="text" placeholder="10004" />
+            <br />
+            <center>
+              <button type="submit">Buy Items</button>
+            </center>
           </form>
         </div>
       </div>
