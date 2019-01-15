@@ -53,13 +53,13 @@ class ShoppingCart extends Component {
       )
       this.props.purchaseCart(this.props.userId, address.id)
     } else {
-      const guestAddress = await axios.post('api/addresses', {
+      const {data: guestAddress} = await axios.post('api/addresses', {
         streetAddress: streetAddress.value,
         city: city.value,
         state: state.value,
         zipCode: zipCode.value
       })
-      this.props.purchaseCart(null, guestAddress.Id, this.props.cart)
+      this.props.purchaseCart(null, guestAddress.id, this.props.cart)
     }
   }
 

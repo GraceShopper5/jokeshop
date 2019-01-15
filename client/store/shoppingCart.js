@@ -118,7 +118,7 @@ export const purchaseCart = (userId, addressId, cart) => async dispatch => {
     dispatch(fetchOrderHistory(userId))
   } else {
     console.log('address', addressId)
-    const newGuestOrder = await axios.post('/api/orders', {
+    const {data: newGuestOrder} = await axios.post('/api/orders', {
       purchaseDate: new Date(),
       addressId,
       products: cart

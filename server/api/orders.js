@@ -24,9 +24,18 @@ router.post('/', async (req, res, next) => {
       isPurchased: true
     })
     console.log(products)
-    const newOrderItems = await newGuestOrder.addProducts(
-      products.map(product => product.id)
-    )
+    const newOrderItems = await products.map(async product => {
+      await newGuestOrder.addProduct(product.id, {
+        through: {
+          pricePaid: product.currentPrice,
+          quantity: product.OrderItem.quantity
+        }
+      })
+    })
+    // const newOrderItems = await newGuestOrder.addProducts(
+    //   products.map(product => product.id)
+    // )
+
     res.json({newGuestOrder, newOrderItems})
   } catch (err) {
     next(err)
