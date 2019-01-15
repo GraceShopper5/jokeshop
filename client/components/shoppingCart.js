@@ -12,6 +12,7 @@ import TableCell from '@material-ui/core/TableCell'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
 import Paper from '@material-ui/core/Paper'
+import Typography from '@material-ui/core/Typography'
 import axios from 'axios'
 
 const styles = theme => ({
@@ -93,91 +94,101 @@ class ShoppingCart extends Component {
   render() {
     const {classes, cart} = this.props
     return (
-      <div className="order-history">
-        <Paper className={classes.root}>
-          <Table className={classes.table}>
-            <TableHead>
-              <TableRow>
-                <TableCell>Shopping Cart</TableCell>
-                <TableCell align="right">Name</TableCell>
-                <TableCell align="right">Price</TableCell>
-                <TableCell align="right">Quantity</TableCell>
-                <TableCell align="right">Total Price</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {cart
-                ? cart.map(product => (
-                    <TableRow key={product.id}>
-                      <TableCell component="th" scope="row">
-                        <img src={product.imageUrl} height="100" width="auto" />
-                      </TableCell>
-                      <TableCell align="right">{product.name}</TableCell>
-                      <TableCell align="right">
-                        ${(product.currentPrice / 100).toFixed(2)}
-                      </TableCell>
-                      <TableCell align="right">
-                        <select
-                          defaultValue={product.OrderItem.quantity}
-                          onChange={event => {
-                            this.handleAddToCart(event, product)
-                          }}
-                        >
-                          {product.OrderItem.quantity > 10
-                            ? this.buildOptions(product.OrderItem.quantity)
-                            : this.buildOptions(10)}
-                        </select>
-                      </TableCell>
-                      <TableCell align="right">
-                        ${(
-                          product.currentPrice *
-                          product.OrderItem.quantity /
-                          100
-                        ).toFixed(2)}
-                      </TableCell>
-                    </TableRow>
-                  ))
-                : null}
-              <TableRow>
-                <TableCell />
-                <TableCell align="right" />
-                <TableCell align="right" />
-                <TableCell align="right" />
-                <TableCell align="right">
-                  <strong>
-                    ${this.props.cart
-                      ? (
-                          this.getUserCartItemSum(this.props.cart) / 100
-                        ).toFixed(2)
-                      : 0.0}
-                  </strong>
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </Paper>
+      <div>
+        {cart && cart.length ? (
+          <div className="order-history">
+            <Paper className={classes.root}>
+              <Table className={classes.table}>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Shopping Cart</TableCell>
+                    <TableCell align="right">Name</TableCell>
+                    <TableCell align="right">Price</TableCell>
+                    <TableCell align="right">Quantity</TableCell>
+                    <TableCell align="right">Total Price</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {cart
+                    ? cart.map(product => (
+                        <TableRow key={product.id}>
+                          <TableCell component="th" scope="row">
+                            <img
+                              src={product.imageUrl}
+                              height="100"
+                              width="auto"
+                            />
+                          </TableCell>
+                          <TableCell align="right">{product.name}</TableCell>
+                          <TableCell align="right">
+                            ${(product.currentPrice / 100).toFixed(2)}
+                          </TableCell>
+                          <TableCell align="right">
+                            <select
+                              defaultValue={product.OrderItem.quantity}
+                              onChange={event => {
+                                this.handleAddToCart(event, product)
+                              }}
+                            >
+                              {product.OrderItem.quantity > 10
+                                ? this.buildOptions(product.OrderItem.quantity)
+                                : this.buildOptions(10)}
+                            </select>
+                          </TableCell>
+                          <TableCell align="right">
+                            ${(
+                              product.currentPrice *
+                              product.OrderItem.quantity /
+                              100
+                            ).toFixed(2)}
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    : null}
+                  <TableRow>
+                    <TableCell />
+                    <TableCell align="right" />
+                    <TableCell align="right" />
+                    <TableCell align="right" />
+                    <TableCell align="right">
+                      <strong>
+                        ${this.props.cart
+                          ? (
+                              this.getUserCartItemSum(this.props.cart) / 100
+                            ).toFixed(2)
+                          : 0.0}
+                      </strong>
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </Paper>
 
-        <div className="flex">
-          <form onSubmit={this.handleSubmit} id="checkout">
-            <h3>Checkout</h3>
-            <label>Street Address</label>
-            <input
-              name="streetAddress"
-              type="text"
-              placeholder="5 Hanover Square"
-            />
-            <label>City</label>
-            <input name="city" type="text" placeholder="New York" />
-            <label>State</label>
-            <input name="state" type="text" placeholder="NY" />
-            <label>ZIP Code</label>
-            <input name="zipCode" type="text" placeholder="10004" />
-            <br />
-            <center>
-              <button type="submit">Buy Items</button>
-            </center>
-          </form>
-        </div>
+            <div className="flex">
+              <form onSubmit={this.handleSubmit} id="checkout">
+                <h3>Checkout</h3>
+                <label>Street Address</label>
+                <input
+                  name="streetAddress"
+                  type="text"
+                  placeholder="5 Hanover Square"
+                />
+                <label>City</label>
+                <input name="city" type="text" placeholder="New York" />
+                <label>State</label>
+                <input name="state" type="text" placeholder="NY" />
+                <label>ZIP Code</label>
+                <input name="zipCode" type="text" placeholder="10004" />
+                <br />
+                <center>
+                  <button type="submit">Buy Items</button>
+                </center>
+              </form>
+            </div>
+          </div>
+        ) : (
+          <Typography>Your Cart Is Empty. Go Pick Out Some Jokes!</Typography>
+        )}
       </div>
     )
   }
