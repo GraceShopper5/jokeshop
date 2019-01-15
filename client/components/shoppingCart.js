@@ -5,21 +5,10 @@ import {connect} from 'react-redux'
 import PropTypes from 'prop-types'
 import {withStyles} from '@material-ui/core/styles'
 import Button from '@material-ui/core/Button'
-import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
-import Card from '@material-ui/core/Card'
-import ListItemIcon from '@material-ui/core/ListItemIcon'
-import ListItemText from '@material-ui/core/ListItemText'
-import Divider from '@material-ui/core/Divider'
-import CardActions from '@material-ui/core/CardActions'
-import CardContent from '@material-ui/core/CardContent'
-import CardMedia from '@material-ui/core/CardMedia'
-import Typography from '@material-ui/core/Typography'
 
-// import InboxIcon from '@material-ui/icons/Inbox';
-// import DraftsIcon from '@material-ui/icons/Drafts';
+import axios from 'axios'
+
 import {OrderItem} from './index'
-import {isNullOrUndefined} from 'util'
 
 const styles = theme => ({
   root: {
@@ -44,71 +33,73 @@ const styles = theme => ({
 })
 
 class ShoppingCart extends Component {
+  constructor() {
+    super()
+    this.handleSubmit = this.handleSubmit.bind(this)
+  }
+
+  async handleSubmit(event) {
+    event.preventDefault()
+    const {streetAddress, city, state, zipCode} = event.target
+    if (this.props.userId) {
+      const {data: address} = await axios.post(
+        `api/users/${this.props.userId}/addresses`,
+        {
+          streetAddress: streetAddress.value,
+          city: city.value,
+          state: state.value,
+          zipCode: zipCode.value
+        }
+      )
+      this.props.purchaseCart(this.props.userId, address.id)
+    } else {
+      // const address = await axios.post('/address', { streetAddress: streetAddress.value, city: city.value, state: state.value, zipCode: zipCode.value });
+      console.log("guest checkout doesn't work yet")
+    }
+  }
+
   render() {
-    // console.log('this.props.cart', this.props.cart)
     const {classes, cart, userId, purchaseCart: pc} = this.props
     return (
-      <div className={classes.root} id="shopping-cart">
-        <table>
-          <tbody>
-            <tr>
-              <td>Image</td>
-              <td>Name</td>
-              <td>Price</td>
-              <td>Quantity</td>
-              <td>Total Price</td>
-            </tr>
-            {cart
-              ? cart.map(product => (
-                  <OrderItem
-                    userId={userId}
-                    key={product.id}
-                    product={product}
-                  />
-                ))
-              : null}
-          </tbody>
-        </table>
-        <Button onClick={() => pc(userId)}>Buy Items</Button>
-        {/* <List component="nav">
-          {this.props.cart && this.props.cart.length ? (
-            this.props.cart.map(product => (
-              <ListItem button key={product.id}>
-                  <Card className={classes.product}>
-                    <CardMedia
-                      className={classes.cardMedia}
-                      image={product.imageUrl}
-                      title={product.name}
+      <div>
+        <div className={classes.root} id="shopping-cart">
+          <table>
+            <tbody>
+              <tr>
+                <td>Image</td>
+                <td>Name</td>
+                <td>Price</td>
+                <td>Quantity</td>
+                <td>Total Price</td>
+              </tr>
+              {cart
+                ? cart.map(product => (
+                    <OrderItem
+                      userId={userId}
+                      key={product.id}
+                      product={product}
+                      isPurchased={false}
                     />
-                    <CardContent className={classes.cardContent}>
-                      <Typography gutterBottom variant="h5" component="h2">
-                        {product.name}
-                      </Typography>
-                      <Typography>{product.description}</Typography>
-                    </CardContent>
-                    <CardActions>
-                      <Button
-                        size="small"
-                        color="primary"
-                        component={Link}
-                        to={`/products/${product.id}`}
-                      >
-                        View
-                      </Button>
-                      <Button size="small" color="primary">
-                        Purchase
-                      </Button>
-                      <Button size="small" color="primary">
-                        Add to Cart
-                      </Button>
-                    </CardActions>
-                  </Card>
-                </ListItem>
-            ))
-          ) : (
-            <h1>nothing here</h1>
-          )}
-        </List> */}
+                  ))
+                : null}
+            </tbody>
+          </table>
+          {/* <Button onClick={() => pc(userId)}>Buy Items</Button> */}
+        </div>
+        <div>
+          <form onSubmit={this.handleSubmit}>
+            <h2>Checkout</h2>
+            <label>Street Address</label>
+            <input name="streetAddress" type="text" />
+            <label>City</label>
+            <input name="city" type="text" />
+            <label>State</label>
+            <input name="state" type="text" />
+            <label>ZIP Code</label>
+            <input name="zipCode" type="text" />
+            <button type="submit">Buy Items</button>
+          </form>
+        </div>
       </div>
     )
   }
@@ -120,8 +111,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    purchaseCart: userId => {
-      dispatch(purchaseCart(userId))
+    purchaseCart: (userId, addressId) => {
+      dispatch(purchaseCart(userId, addressId))
     }
   }
 }

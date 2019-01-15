@@ -1,5 +1,6 @@
 import axios from 'axios'
 import history from '../history'
+import {fetchOrderHistory} from './orderHistory'
 
 /**
  * ACTION TYPES
@@ -83,12 +84,15 @@ export const addToCart = (
   }
 }
 
-export const purchaseCart = userId => async dispatch => {
+export const purchaseCart = (userId, addressId) => async dispatch => {
   if (userId) {
     const newEmptyCart = await axios.put(`/api/users/${userId}/shopping-cart`, {
-      purchase: true
+      purchase: true,
+      purchaseDate: new Date(),
+      addressId
     })
     dispatch(getCart(newEmptyCart))
+    dispatch(fetchOrderHistory(userId))
   }
 }
 

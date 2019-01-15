@@ -71,7 +71,8 @@ User.prototype.getShoppingCart = async function() {
 User.prototype.getOrderHistory = async function() {
   const orderHistory = await Order.findAll({
     where: {userId: this.id, isPurchased: true},
-    include: [{model: Product}]
+    include: [{model: Product}],
+    order: [['purchaseDate', 'DESC']]
   })
   return orderHistory
 }

@@ -1,5 +1,5 @@
 const router = require('express').Router()
-const {User, Order, OrderItem} = require('../db/models')
+const {User, Order, OrderItem, Address} = require('../db/models')
 module.exports = router
 
 router.get('/', async (req, res, next) => {
@@ -77,13 +77,20 @@ router.get('/:id/shopping-cart', async (req, res, next) => {
 
 router.put('/:id/shopping-cart', async (req, res, next) => {
   try {
-    const {productId, quantity, overwrite, purchase} = req.body
+    const {
+      productId,
+      quantity,
+      overwrite,
+      purchase,
+      purchaseDate,
+      addressId
+    } = req.body
     const shoppingCart = await User.getUserShoppingCart(req.params.id)
     if (purchase) {
-      await shoppingCart.update({isPurchased: true})
-      shoppingCart.products.forEach(product => {
+      await shoppingCart.update({isPurchased: true, purchaseDate, addressId})
+      shoppingCart.products.forEach(async product => {
         product.OrderItem.pricePaid = product.currentPrice
-        product.OrderItem.save()
+        await product.OrderItem.save()
       })
       const newShoppingCart = await Order.createUserOrder(req.params.id, false)
       res.json(newShoppingCart)
@@ -102,6 +109,22 @@ router.put('/:id/shopping-cart', async (req, res, next) => {
       const updatedShoppingCart = await User.getUserShoppingCart(req.params.id)
       res.json(updatedShoppingCart)
     }
+  } catch (err) {
+    next(err)
+  }
+})
+
+router.post('/:id/addresses', async (req, res, next) => {
+  try {
+    const {streetAddress, city, state, zipCode} = req.body
+    const address = await Address.create({
+      streetAddress,
+      city,
+      state,
+      zipCode,
+      userId: req.params.id
+    })
+    res.json(address)
   } catch (err) {
     next(err)
   }
