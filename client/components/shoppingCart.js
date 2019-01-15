@@ -1,34 +1,29 @@
 import React, {Component} from 'react'
 import {Link, withRouter} from 'react-router-dom'
-import {purchaseCart} from '../store'
 import {connect} from 'react-redux'
-import PropTypes from 'prop-types'
-import {withStyles} from '@material-ui/core/styles'
+import {purchaseCart} from '../store'
+import {addToCart} from '../store'
 import Button from '@material-ui/core/Button'
 
-import axios from 'axios'
+import PropTypes from 'prop-types'
+import {withStyles} from '@material-ui/core/styles'
+import Table from '@material-ui/core/Table'
+import TableBody from '@material-ui/core/TableBody'
+import TableCell from '@material-ui/core/TableCell'
+import TableHead from '@material-ui/core/TableHead'
+import TableRow from '@material-ui/core/TableRow'
+import Paper from '@material-ui/core/Paper'
 
-import {OrderItem} from './index'
+import axios from 'axios'
 
 const styles = theme => ({
   root: {
     width: '100%',
-    maxWidth: 360,
-    backgroundColor: theme.palette.background.paper
+    marginTop: theme.spacing.unit * 3,
+    overflowX: 'auto'
   },
-  cardGrid: {
-    padding: `${theme.spacing.unit * 8}px 0`
-  },
-  card: {
-    height: '100%',
-    display: 'flex',
-    flexDirection: 'column'
-  },
-  cardMedia: {
-    paddingTop: '56.25%' // 16:9
-  },
-  cardContent: {
-    flexGrow: 1
+  table: {
+    minWidth: 700
   }
 })
 
@@ -36,6 +31,24 @@ class ShoppingCart extends Component {
   constructor() {
     super()
     this.handleSubmit = this.handleSubmit.bind(this)
+    this.handleAddToCart = this.handleAddToCart.bind(this)
+  }
+
+  buildOptions(n) {
+    const arr = []
+    for (let i = 1; i <= n; i++) {
+      arr.push(
+        <option key={i} value={i}>
+          {i}
+        </option>
+      )
+    }
+    return arr
+  }
+
+  handleAddToCart(event, product) {
+    event.preventDefault()
+    this.props.addToCart(product, event.target.value, true, this.props.userId)
   }
 
   async handleSubmit(event) {
@@ -64,33 +77,57 @@ class ShoppingCart extends Component {
   }
 
   render() {
-    const {classes, cart, userId, purchaseCart: pc} = this.props
+    const {classes, cart} = this.props
     return (
-      <div>
-        <div className={classes.root} id="shopping-cart">
-          <table>
-            <tbody>
-              <tr>
-                <td>Image</td>
-                <td>Name</td>
-                <td>Price</td>
-                <td>Quantity</td>
-                <td>Total Price</td>
-              </tr>
+      <div className="order-history">
+        <Paper className={classes.root}>
+          <Table className={classes.table}>
+            <TableHead>
+              <TableRow>
+                <TableCell>Shopping Cart</TableCell>
+                <TableCell align="right">Name</TableCell>
+                <TableCell align="right">Price</TableCell>
+                <TableCell align="right">Quantity</TableCell>
+                <TableCell align="right">Total Price</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
               {cart
                 ? cart.map(product => (
-                    <OrderItem
-                      userId={userId}
-                      key={product.id}
-                      product={product}
-                      isPurchased={false}
-                    />
+                    <TableRow key={product.id}>
+                      <TableCell component="th" scope="row">
+                        <img src={product.imageUrl} height="100" width="auto" />
+                      </TableCell>
+                      <TableCell align="right">{product.name}</TableCell>
+                      <TableCell align="right">
+                        ${(product.currentPrice / 100).toFixed(2)}
+                      </TableCell>
+                      <TableCell align="right">
+                        <select
+                          defaultValue={product.OrderItem.quantity}
+                          onChange={event => {
+                            this.handleAddToCart(event, product)
+                          }}
+                        >
+                          {product.OrderItem.quantity > 10
+                            ? this.buildOptions(product.OrderItem.quantity)
+                            : this.buildOptions(10)}
+                        </select>
+                      </TableCell>
+                      <TableCell align="right">
+                        ${(
+                          product.currentPrice *
+                          product.OrderItem.quantity /
+                          100
+                        ).toFixed(2)}
+                      </TableCell>
+                    </TableRow>
                   ))
                 : null}
-            </tbody>
-          </table>
-          {/* <Button onClick={() => pc(userId)}>Buy Items</Button> */}
-        </div>
+            </TableBody>
+          </Table>
+        </Paper>
+
         <div>
           <form onSubmit={this.handleSubmit}>
             <h2>Checkout</h2>
@@ -118,7 +155,9 @@ const mapDispatchToProps = dispatch => {
   return {
     purchaseCart: (userId, addressId, cart) => {
       dispatch(purchaseCart(userId, addressId, cart))
-    }
+    },
+    addToCart: (productId, quantity, overwrite, userId) =>
+      dispatch(addToCart(productId, quantity, overwrite, userId))
   }
 }
 

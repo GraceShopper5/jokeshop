@@ -2,37 +2,79 @@ import React, {Component} from 'react'
 import {Link, withRouter} from 'react-router-dom'
 import {connect} from 'react-redux'
 import PropTypes from 'prop-types'
+import {withStyles} from '@material-ui/core/styles'
+import Table from '@material-ui/core/Table'
+import TableBody from '@material-ui/core/TableBody'
+import TableCell from '@material-ui/core/TableCell'
+import TableHead from '@material-ui/core/TableHead'
+import TableRow from '@material-ui/core/TableRow'
+import Paper from '@material-ui/core/Paper'
 
-import {OrderItem} from './index'
+const styles = theme => ({
+  root: {
+    width: '100%',
+    marginTop: theme.spacing.unit * 3,
+    overflowX: 'auto'
+  },
+  table: {
+    minWidth: 700
+  }
+})
 
 class OrderHistory extends Component {
   render() {
-    const {orderHistory, userId} = this.props
+    const {orderHistory, userId, classes} = this.props
     return (
-      <div>
+      <div className="order-history">
         {orderHistory.map(order => (
-          <div key={order.id}>
-            <div>Order Placed: {new Date(order.purchaseDate).toLocaleString(navigator.language, {month: '2-digit', day: '2-digit', year: '2-digit', hour: '2-digit', minute: '2-digit'})}</div>
-            <table>
-              <tbody>
-                <tr>
-                  <th />
-                  <th>Name</th>
-                  <th>Price</th>
-                  <th>Quantity</th>
-                  <th>Total Price</th>
-                </tr>
+          <Paper className={classes.root} key={order.id}>
+            <Table className={classes.table}>
+              <TableHead>
+                <TableRow>
+                  <TableCell>
+                    Order Placed:{' '}
+                    {new Date(order.purchaseDate).toLocaleString(
+                      navigator.language,
+                      {
+                        month: '2-digit',
+                        day: '2-digit',
+                        year: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                      }
+                    )}
+                  </TableCell>
+                  <TableCell align="right">Name</TableCell>
+                  <TableCell align="right">Price</TableCell>
+                  <TableCell align="right">Quantity</TableCell>
+                  <TableCell align="right">Total Price</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
                 {order.products.map(product => (
-                  <OrderItem
-                    userId={userId}
-                    key={product.id}
-                    product={product}
-                    isPurchased={true}
-                  />
+                  <TableRow key={product.id}>
+                    <TableCell component="th" scope="row">
+                      <img src={product.imageUrl} height="100" width="auto" />
+                    </TableCell>
+                    <TableCell align="right">{product.name}</TableCell>
+                    <TableCell align="right">
+                      ${(product.currentPrice / 100).toFixed(2)}
+                    </TableCell>
+                    <TableCell align="right">
+                      {product.OrderItem.quantity}
+                    </TableCell>
+                    <TableCell align="right">
+                      ${(
+                        product.currentPrice *
+                        product.OrderItem.quantity /
+                        100
+                      ).toFixed(2)}
+                    </TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
-          </div>
+              </TableBody>
+            </Table>
+          </Paper>
         ))}
       </div>
     )
@@ -43,4 +85,6 @@ const mapStateToProps = state => {
   return {orderHistory: state.orderHistory, userId: state.user.id}
 }
 
-export default withRouter(connect(mapStateToProps)(OrderHistory))
+export default withRouter(
+  connect(mapStateToProps)(withStyles(styles)(OrderHistory))
+)
