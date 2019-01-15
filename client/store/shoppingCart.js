@@ -104,7 +104,7 @@ export const addToCart = (
   }
 }
 
-export const purchaseCart = (userId, addressId) => async dispatch => {
+export const purchaseCart = (userId, addressId, cart) => async dispatch => {
   if (userId) {
     const {data: newEmptyCart} = await axios.put(
       `/api/users/${userId}/shopping-cart`,
@@ -117,7 +117,13 @@ export const purchaseCart = (userId, addressId) => async dispatch => {
     dispatch(getCart(newEmptyCart))
     dispatch(fetchOrderHistory(userId))
   } else {
-    await axios.post('/api/orders', {purchaseDate: new Date(), addressId})
+    console.log('address', addressId)
+    const newGuestOrder = await axios.post('/api/orders', {
+      purchaseDate: new Date(),
+      addressId,
+      products: cart
+    })
+    localStorage.setItem('cart', JSON.stringify([]))
     dispatch(getCart([]))
   }
 }

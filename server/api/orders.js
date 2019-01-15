@@ -17,9 +17,17 @@ router.get('/', async (req, res, next) => {
 
 router.post('/', async (req, res, next) => {
   try {
-    const {purchaseDate, addressId} = req.body
-    const newGuestOrder = await Order.create({purchaseDate, addressId})
-    res.json(newGuestOrder)
+    const {purchaseDate, addressId, products} = req.body
+    const newGuestOrder = await Order.create({
+      purchaseDate,
+      addressId,
+      isPurchased: true
+    })
+    console.log(products)
+    const newOrderItems = await newGuestOrder.addProducts(
+      products.map(product => product.id)
+    )
+    res.json({newGuestOrder, newOrderItems})
   } catch (err) {
     next(err)
   }
