@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {Link, withRouter} from 'react-router-dom'
-import {fetchProducts} from '../store'
+import {fetchProducts, addToCart} from '../store'
 import {connect} from 'react-redux'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
@@ -11,6 +11,11 @@ import CardContent from '@material-ui/core/CardContent'
 import CardMedia from '@material-ui/core/CardMedia'
 import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
+import ExpansionPanel from '@material-ui/core/ExpansionPanel'
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
+import ExpansionPanelActions from '@material-ui/core/ExpansionPanelActions'
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
+import {AddQuantityToCart} from '../components'
 import {withStyles} from '@material-ui/core/styles'
 
 const styles = theme => ({
@@ -53,11 +58,7 @@ const styles = theme => ({
     paddingTop: '56.25%' // 16:9
   },
   cardContent: {
-    flexGrow: 1
-  },
-  footer: {
-    backgroundColor: theme.palette.background.paper,
-    padding: theme.spacing.unit * 6
+    // flexGrow: 1
   }
 })
 
@@ -69,14 +70,14 @@ class AllProducts extends Component {
     this.props.fetchProducts()
   }
   render() {
-    const {classes} = this.props
+    const {classes, userId, addToCart: atc} = this.props
     return (
       <div className={classNames(classes.layout, classes.cardGrid)}>
         {/* End hero unit */}
         <Grid container spacing={40}>
           {this.props.products.map(product => (
             <Grid item key={product.id} sm={6} md={4} lg={3}>
-              <Card className={classes.product}>
+              <Card className={classes.card}>
                 <CardMedia
                   className={classes.cardMedia}
                   image={product.imageUrl}
@@ -86,7 +87,9 @@ class AllProducts extends Component {
                   <Typography gutterBottom variant="h5" component="h2">
                     {product.name}
                   </Typography>
-                  <Typography>{product.description}</Typography>
+                  <Typography gutterBottom variant="h5" component="h5">{`$ ${(
+                    product.currentPrice / 100.0
+                  ).toFixed(2)}`}</Typography>
                 </CardContent>
                 <CardActions>
                   <Button
@@ -97,12 +100,20 @@ class AllProducts extends Component {
                   >
                     View
                   </Button>
-                  <Button size="small" color="primary">
-                    Purchase
-                  </Button>
-                  <Button size="small" color="primary">
-                    Add to Cart
-                  </Button>
+                  <ExpansionPanel>
+                    <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                      <Typography className={classes.heading}>
+                        Quick Shop
+                      </Typography>
+                    </ExpansionPanelSummary>
+                    <ExpansionPanelActions>
+                      <AddQuantityToCart
+                        userId={userId}
+                        addToCart={atc}
+                        product={product}
+                      />
+                    </ExpansionPanelActions>
+                  </ExpansionPanel>
                 </CardActions>
               </Card>
             </Grid>
@@ -114,14 +125,16 @@ class AllProducts extends Component {
 }
 
 const mapStateToProps = state => {
-  return {products: state.product.products}
+  return {userId: state.user.id, products: state.product.products}
 }
 
 const mapDispatchToProps = dispatch => {
   return {
     fetchProducts: () => {
       dispatch(fetchProducts())
-    }
+    },
+    addToCart: (product, quantity, overwrite, userId) =>
+      dispatch(addToCart(product, quantity, overwrite, userId))
   }
 }
 AllProducts.propTypes = {

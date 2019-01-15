@@ -90,7 +90,7 @@ class Profile extends Component {
                   <TableCell align="right" />
                   <TableCell align="right">
                     <strong>
-                      ${order
+                      Order Total: ${order
                         ? (this.getOrderSubtotal(order.products) / 100).toFixed(
                             2
                           )

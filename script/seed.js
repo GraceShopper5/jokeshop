@@ -27,19 +27,32 @@ async function seed() {
 
   const products = await Promise.all([
     Product.create({
-      name: 'Medieval Joke',
+      name: 'Medieval Jokes',
       currentPrice: 300,
-      description: 'A joke from the middle ages.'
+      description: 'Jokes from the middle ages.',
+      imageUrl:
+        'http://www.historynotes.info/wp-content/uploads/2014/04/medieval-humour-1.jpg'
     }),
     Product.create({
-      name: 'Rennaisance Joke',
+      name: 'Rennaisance Jokes',
       currentPrice: 200,
-      description: 'A joke from the funniest age.'
+      description: 'Jokes from the funniest age.',
+      imageUrl:
+        'http://img1.joyreactor.com/pics/post/renaissance-art-picture-xbox-4277983.jpeg'
     }),
     Product.create({
-      name: 'Post-modern Joke',
-      currentPrice: 200,
-      description: 'A joke from the least sensical age.'
+      name: 'Mom Jokes',
+      currentPrice: 240,
+      description: 'These jokes will get you kicked out of the house.',
+      imageUrl:
+        'https://geneticliteracyproject.org/wp-content/uploads/2016/10/01-mother-and-child.jpg'
+    }),
+    Product.create({
+      name: 'Fart Jokes',
+      currentPrice: 370,
+      description: 'These jokes are silent but deadly.',
+      imageUrl:
+        'https://riotfest.org/wp-content/uploads/2017/03/fart-spongebob-698x392.jpg'
     })
   ])
 

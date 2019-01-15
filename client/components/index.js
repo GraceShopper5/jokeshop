@@ -5,9 +5,10 @@
  */
 export {default as Navbar} from './navbar'
 export {default as UserHome} from './user-home'
-export {Login, Signup} from './auth-form'
+export {Login, Signup} from './signIn'
 export {default as AllProducts} from './allProducts'
 export {default as SingleProduct} from './singleProduct'
 export {default as ShoppingCart} from './shoppingCart'
 export {default as Profile} from './profile'
+export {default as AddQuantityToCart} from './addQuantityToCart'
 export {default as Confirmation} from './confirmation'

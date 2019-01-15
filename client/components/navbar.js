@@ -37,29 +37,18 @@ const styles = theme => ({
 const getUserCartItemSum = cartItems => {
   return cartItems.reduce((accum, item) => accum + item.OrderItem.quantity, 0)
 }
-// const getGuestCartItemSum = () => {
-//   const cartFromStorage = JSON.parse(localStorage.getItem('cart'))
-//   const cart = cartFromStorage || {}
-//   let total = 0
-//   for (let productId in cart) {
-//     if (cart.hasOwnProperty(productId)) {
-//       total += cart[productId].quantity
-//     }
-//   }
-//   return total
-// }
 
 const Navbar = ({handleClick, isLoggedIn, classes, firstName, cartItems}) => (
   <div>
     <AppBar position="static" className={classes.appBar}>
       <Toolbar>
+        <InsertEmoticon className={classes.icon} />
         <Button
           className={classes.button}
           component={Link}
           to="/"
           color="secondary"
         >
-          <InsertEmoticon className={classes.icon} />
           <Typography variant="h6" color="inherit" noWrap>
             Ye Olde Joke Shop
           </Typography>
@@ -107,9 +96,6 @@ const Navbar = ({handleClick, isLoggedIn, classes, firstName, cartItems}) => (
         </Badge>
       </Toolbar>
     </AppBar>
-
-    <nav />
-    <hr />
   </div>
 )
 

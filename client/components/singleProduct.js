@@ -16,10 +16,7 @@ import CardActions from '@material-ui/core/CardActions'
 import CardContent from '@material-ui/core/CardContent'
 import CardMedia from '@material-ui/core/CardMedia'
 import Typography from '@material-ui/core/Typography'
-import FormControl from '@material-ui/core/FormControl'
-import InputLabel from '@material-ui/core/InputLabel'
-import Select from '@material-ui/core/Select'
-import OutlinedInput from '@material-ui/core/OutlinedInput'
+import {AddQuantityToCart} from '../components'
 
 import {withStyles} from '@material-ui/core/styles'
 import ReviewForm from './reviewForm'
@@ -50,9 +47,8 @@ const styles = theme => ({
 class SingleProduct extends Component {
   constructor(props) {
     super(props)
-    this.state = {quantity: 1, showReviewForm: false}
+    this.state = {showReviewForm: false}
 
-    this.handleAddToCart = this.handleAddToCart.bind(this)
     this.wasItemPurchased = this.wasItemPurchased.bind(this)
     this.toggleReviewForm = this.toggleReviewForm.bind(this)
     this.handleReviewSubmission = this.handleReviewSubmission.bind(this)
@@ -61,14 +57,6 @@ class SingleProduct extends Component {
   componentDidMount() {
     this.props.fetchSingleProduct(this.props.match.params.productId)
     this.props.fetchProductReviews(this.props.match.params.productId)
-  }
-
-  handleChange = name => event => {
-    this.setState({[name]: event.target.value})
-  }
-  handleAddToCart() {
-    const {userId, product, addToCart: atc} = this.props
-    atc(product, this.state.quantity, false, userId)
   }
 
   wasItemPurchased() {
@@ -107,14 +95,14 @@ class SingleProduct extends Component {
   }
 
   render() {
-    const {classes, product, userId, orderHistory} = this.props
+    const {classes, product, userId, orderHistory, addToCart: atc} = this.props
     return (
       <div>
         <Grid container justify="center">
           <Card className={classes.card}>
             <CardMedia
               className={classes.cardMedia}
-              image={`../../${product.imageUrl}`}
+              image={product.imageUrl}
               title={product.name}
             />
             <CardContent className={classes.cardContent}>
@@ -125,37 +113,13 @@ class SingleProduct extends Component {
             </CardContent>
             <CardActions>
               <Button size="small" color="primary">
-                Purchase
+                Buy Now
               </Button>
-              <Button
-                size="small"
-                color="primary"
-                onClick={this.handleAddToCart}
-              >
-                Add to Cart
-              </Button>
-              <FormControl variant="outlined" className={classes.formControl}>
-                <InputLabel htmlFor="outlined-quantity">Quantity</InputLabel>
-                <Select
-                  native
-                  value={this.state.quantity}
-                  onChange={this.handleChange('quantity')}
-                  input={
-                    <OutlinedInput
-                      name="quantity"
-                      labelWidth={5}
-                      id="outlined-quantity"
-                    />
-                  }
-                >
-                  <option value="" />
-                  <option value={1}>1</option>
-                  <option value={2}>2</option>
-                  <option value={3}>3</option>
-                  <option value={4}>4</option>
-                  <option value={5}>5</option>
-                </Select>
-              </FormControl>
+              <AddQuantityToCart
+                userId={userId}
+                addToCart={atc}
+                product={product}
+              />
             </CardActions>
           </Card>
         </Grid>
