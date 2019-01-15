@@ -3,6 +3,8 @@ import {withRouter} from 'react-router-dom'
 import {connect} from 'react-redux'
 import {purchaseCart} from '../store'
 import {addToCart} from '../store'
+import CheckoutForm from './checkoutForm'
+
 import history from '../history'
 import PropTypes from 'prop-types'
 import {withStyles} from '@material-ui/core/styles'
@@ -182,6 +184,11 @@ class ShoppingCart extends Component {
                 <br />
                 <center>
                   <button type="submit">Buy Items</button>
+                  <CheckoutForm
+                    name="Checkout"
+                    description="Please enter your credit card information"
+                    amount={1}
+                  />
                 </center>
               </form>
             </div>

@@ -37,32 +37,6 @@ export const fetchOrderHistory = userId => async dispatch => {
   }
 }
 
-// export const createNewOrderFromCart = (
-//   productId,
-//   quantity,
-//   userId
-// ) => async dispatch => {
-//   try {
-//     if (userId) {
-//       const {data: cart} = await axios.put(
-//         `/api/users/${userId}/order-history`,
-//         {
-//           productId,
-//           quantity,
-//         }
-//       )
-//       dispatch(getCart(cart))
-//     } else {
-//       const cartFromStorage = JSON.parse(localStorage.getItem('cart'))
-//       const cart = cartFromStorage || {}
-//       console.log('got cart from local storage', cart)
-//       dispatch(getCart(cart))
-//     }
-//   } catch (err) {
-//     console.error(err)
-//   }
-// }
-
 /**
  * REDUCER
  */

@@ -159,30 +159,3 @@ describe('thunk creators', () => {
     store.clearActions()
   })
 })
-//   describe('getCart', () => {
-//     it('eventually dispatches the GET_CART action', async () => {
-//       mockAxios
-//         .onGet(`/api/users/${fakeUser.id}/shopping-cart`)
-//         .replyOnce(200, fakeCart)
-//       store.dispatch(fetchCart)
-//       const actions = store.getActions()
-//       console.log('WHAT ARE THE ACTIONS', actions)
-//       expect(actions[0].type).to.be.equal('GET_CART')
-//       expect(actions[0].cart).to.be.deep.equal(fakeCart)
-//     })
-//   })
-
-//   describe('addToCart', () => {
-//     it('AddToCart: eventually dispatches the GET_CART action', async () => {
-//       mockAxios
-//         .onPut(`/api/users/${fakeUser.id}/shopping-cart`)
-//         .replyOnce(200, {product: fakeProduct, quantity: 200, overwrite: true})
-//       await store.dispatch((product, quantity, overwrite, userId) =>
-//         addToCart(product, quantity, overwrite, userId)
-//       )
-//       const actions = store.getActions()
-//       expect(actions[0].type).to.be.equal('GET_CART')
-//       expect(actions[0].cart).to.be.deep.equal(expectedCart)
-//     })
-//   })
-// })
