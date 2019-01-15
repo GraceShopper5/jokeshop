@@ -70,13 +70,6 @@ const Navbar = ({handleClick, isLoggedIn, classes, firstName, cartItems}) => (
             <Button className={classes.button} component={Link} to="/profile">
               {firstName}
             </Button>
-            <Button
-              className={classes.button}
-              component={Link}
-              to="/order-history"
-            >
-              Your Orders
-            </Button>
             <Button onClick={handleClick} className={classes.button}>
               Logout
             </Button>

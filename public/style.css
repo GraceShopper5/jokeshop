@@ -19,3 +19,65 @@ form div {
   margin: 1em;
   display: inline-block;
 }
+
+.order-history {
+  display: flex;
+  flex-direction: column;
+  margin-left: 100px;
+  margin-right: 100px;
+}
+
+#checkout {
+  border: 1px solid rgb(180, 180, 180);
+  border-radius: 4px;
+  box-shadow: 0 2px 6px 0 hsla(0, 0%, 0%, 0.2);
+  padding: 0px 20px 20px 20px;
+  background-color: white;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  margin-left: auto;
+}
+
+#checkout input {
+  height: 30px;
+  width: 350px;
+  margin-top: 7px;
+  margin-bottom: 7px;
+  padding-left: 6px;
+  padding-right: 6px;
+  font-size: 0.8em;
+}
+
+#checkout button {
+  background-color: rgb(73, 73, 226);
+  color: white;
+  height: 40px;
+  width: 120px;
+  border-radius: 4px;
+  font-size: 0.9em;
+  letter-spacing: 0.03em;
+  margin-top: 8px;
+  cursor: pointer;
+  transition: 0.4s ease;
+}
+
+#checkout label {
+  font-size: 0.9em;
+}
+
+#checkout button:hover {
+  transition: 0.4s ease;
+  opacity: 0.8;
+}
+
+table {
+  width: 100%;
+}
+
+td {
+  text-align: center;
+}
+
+.flex {
+  display: flex;
+}
