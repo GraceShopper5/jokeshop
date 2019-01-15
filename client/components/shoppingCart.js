@@ -53,8 +53,13 @@ class ShoppingCart extends Component {
       )
       this.props.purchaseCart(this.props.userId, address.id)
     } else {
-      // const address = await axios.post('/address', { streetAddress: streetAddress.value, city: city.value, state: state.value, zipCode: zipCode.value });
-      console.log("guest checkout doesn't work yet")
+      const guestAddress = await axios.post('/addresses', {
+        streetAddress: streetAddress.value,
+        city: city.value,
+        state: state.value,
+        zipCode: zipCode.value
+      })
+      this.props.purchaseCart(null, guestAddress.id)
     }
   }
 

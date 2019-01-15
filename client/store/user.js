@@ -65,7 +65,7 @@ export const logout = () => async dispatch => {
     await axios.post('/auth/logout')
     dispatch(removeUser())
     //clear the cart in local storage when you log out:
-    localStorage.setItem('cart', JSON.stringify({products: []}))
+    localStorage.setItem('cart', JSON.stringify([]))
     dispatch(fetchCart(null))
     dispatch(fetchOrderHistory(null))
     history.push('/')
