@@ -1,10 +1,6 @@
 import axios from 'axios'
-<<<<<<< HEAD
-// import history from '../history'
-=======
 import history from '../history'
 import {fetchOrderHistory} from './orderHistory'
->>>>>>> master
 
 /**
  * ACTION TYPES
