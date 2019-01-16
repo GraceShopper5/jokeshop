@@ -35,6 +35,7 @@ class ShoppingCart extends Component {
     this.handleSubmit = this.handleSubmit.bind(this)
     this.handleAddToCart = this.handleAddToCart.bind(this)
     this.handleRemoveFromCart = this.handleRemoveFromCart.bind(this)
+    this.handleClick = this.handleClick.bind(this)
   }
 
   getUserCartItemSum(cartItems) {
@@ -98,7 +99,9 @@ class ShoppingCart extends Component {
     }
     history.push('/confirmation')
   }
-
+  handleClick(productId) {
+    this.props.history.push(`/products/${productId}`)
+  }
   render() {
     const {classes, cart} = this.props
     return (
@@ -122,7 +125,7 @@ class ShoppingCart extends Component {
                 <TableBody>
                   {cart
                     ? cart.map(product => (
-                        <TableRow key={product.id}>
+                        <TableRow key={product.id} hover={true}>
                           <TableCell component="th" scope="row">
                             <img
                               src={product.imageUrl}
@@ -130,7 +133,12 @@ class ShoppingCart extends Component {
                               width="auto"
                             />
                           </TableCell>
-                          <TableCell align="right">{product.name}</TableCell>
+                          <TableCell
+                            align="right"
+                            onClick={() => this.handleClick(product.id)}
+                          >
+                            {product.name}
+                          </TableCell>
                           <TableCell align="right">
                             ${(product.currentPrice / 100).toFixed(2)}
                           </TableCell>

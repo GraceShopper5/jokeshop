@@ -28,12 +28,21 @@ const styles = theme => ({
 })
 
 class Profile extends Component {
+  constructor(props) {
+    super(props)
+    this.getOrderSubtotal = this.getOrderSubtotal.bind(this)
+    this.handleClick = this.handleClick.bind(this)
+  }
+
   getOrderSubtotal(orderItems) {
     return orderItems.reduce(
       (accum, item) =>
         accum + item.OrderItem.pricePaid * item.OrderItem.quantity,
       0
     )
+  }
+  handleClick(productId) {
+    this.props.history.push(`/products/${productId}`)
   }
 
   render() {
@@ -112,11 +121,16 @@ class Profile extends Component {
                 </TableHead>
                 <TableBody>
                   {order.products.map(product => (
-                    <TableRow key={product.id}>
+                    <TableRow key={product.id} hover={true}>
                       <TableCell component="th" scope="row">
                         <img src={product.imageUrl} height="100" width="auto" />
                       </TableCell>
-                      <TableCell align="right">{product.name}</TableCell>
+                      <TableCell
+                        align="right"
+                        onClick={() => this.handleClick(product.id)}
+                      >
+                        {product.name}
+                      </TableCell>
                       <TableCell align="right">
                         $ {(product.OrderItem.pricePaid / 100).toFixed(2)}
                       </TableCell>
