@@ -41,12 +41,6 @@ router.get('/:id/order-history', async (req, res, next) => {
       (req.session.userId && req.session.userId === Number(req.params.id)) ||
       req.session.userIsAdmin
     ) {
-      // const orders = await Order.findAll({
-      //   where: {
-      //     userId: req.params.id,
-      //     isPurchased: true
-      //   }
-      // })
       const user = await User.findById(req.params.id)
       const orderHistory = await user.getOrderHistory()
       res.json(orderHistory)
@@ -109,6 +103,19 @@ router.put('/:id/shopping-cart', async (req, res, next) => {
       const updatedShoppingCart = await User.getUserShoppingCart(req.params.id)
       res.json(updatedShoppingCart)
     }
+  } catch (err) {
+    next(err)
+  }
+})
+
+router.delete('/:id/shopping-cart', async (req, res, next) => {
+  try {
+    const shoppingCart = await User.getUserShoppingCart(req.params.id)
+    const {productId} = req.body
+    await OrderItem.destroy({
+      where: {productId, orderId: shoppingCart.id}
+    })
+    res.json(shoppingCart)
   } catch (err) {
     next(err)
   }

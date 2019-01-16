@@ -15,6 +15,7 @@ import ExpansionPanel from '@material-ui/core/ExpansionPanel'
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
 import ExpansionPanelActions from '@material-ui/core/ExpansionPanelActions'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
+import Popover from '@material-ui/core/Popover'
 import {AddQuantityToCart} from '../components'
 import {withStyles} from '@material-ui/core/styles'
 
@@ -58,67 +59,129 @@ const styles = theme => ({
     paddingTop: '56.25%' // 16:9
   },
   cardContent: {
-    // flexGrow: 1
+    flexGrow: 1
+  },
+  typography: {
+    margin: theme.spacing.unit * 2,
+    marginBottom: theme.spacing.unit * 3
   }
 })
 
 class AllProducts extends Component {
   constructor(props) {
     super(props)
+    this.state = {
+      anchorEl: null
+    }
+    this.handlePopoverOpen = this.handlePopoverOpen.bind(this)
+    this.handlePopoverClose = this.handlePopoverClose.bind(this)
   }
   componentDidMount() {
     this.props.fetchProducts()
   }
+
+  handlePopoverOpen(event, popoverId) {
+    this.setState({
+      openedPopoverId: popoverId,
+      anchorEl: event.target
+    })
+  }
+
+  handlePopoverClose = () => {
+    this.setState({
+      openedPopoverId: null,
+      anchorEl: null
+    })
+  }
   render() {
     const {classes, userId, addToCart: atc} = this.props
+    const {anchorEl, openedPopoverId} = this.state
     return (
-      <div className={classNames(classes.layout, classes.cardGrid)}>
-        {/* End hero unit */}
-        <Grid container spacing={40}>
-          {this.props.products.map(product => (
-            <Grid item key={product.id} sm={6} md={4} lg={3}>
-              <Card className={classes.card}>
-                <CardMedia
-                  className={classes.cardMedia}
-                  image={product.imageUrl}
-                  title={product.name}
-                />
-                <CardContent className={classes.cardContent}>
-                  <Typography gutterBottom variant="h5" component="h2">
-                    {product.name}
-                  </Typography>
-                  <Typography gutterBottom variant="h5" component="h5">{`$ ${(
-                    product.currentPrice / 100.0
-                  ).toFixed(2)}`}</Typography>
-                </CardContent>
-                <CardActions>
-                  <Button
-                    size="small"
-                    color="primary"
-                    component={Link}
-                    to={`/products/${product.id}`}
-                  >
-                    View
-                  </Button>
-                  <ExpansionPanel>
-                    <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                      <Typography className={classes.heading}>
+      <div>
+        <Typography
+          className={classes.typography}
+          variant="h1"
+          component="h1"
+          align="center"
+        >
+          Products
+        </Typography>
+        <div className={classNames(classes.layout, classes.cardGrid)}>
+          <Grid container spacing={40}>
+            {this.props.products.map(product => (
+              <Grid item key={product.id} sm={6} md={4} lg={3}>
+                <Card className={classes.card}>
+                  <CardMedia
+                    className={classes.cardMedia}
+                    image={product.imageUrl}
+                    title={product.name}
+                  />
+                  <CardContent className={classes.cardContent}>
+                    <Typography
+                      gutterBottom
+                      variant="h5"
+                      component="h2"
+                      className={classes.typography}
+                    >
+                      {product.name}
+                    </Typography>
+                    <Typography
+                      variant="h5"
+                      component="h5"
+                      className={classes.typography}
+                    >{`$ ${(product.currentPrice / 100.0).toFixed(
+                      2
+                    )}`}</Typography>
+                  </CardContent>
+                  <CardActions>
+                    <Button
+                      size="small"
+                      color="primary"
+                      component={Link}
+                      to={`/products/${product.id}`}
+                    >
+                      View
+                    </Button>
+                    <Button
+                      aria-owns={
+                        open ? `quick-shop-popper-${product.id}` : undefined
+                      }
+                      aria-haspopup="true"
+                      variant="contained"
+                      onClick={e => this.handlePopoverOpen(e, product.id)}
+                    >
+                      Quick Shop
+                    </Button>
+                    <Popover
+                      id={`quick-shop-popper-${product.id}`}
+                      open={openedPopoverId === product.id}
+                      anchorEl={anchorEl}
+                      onClose={this.handlePopoverClose}
+                      anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'center'
+                      }}
+                      transformOrigin={{
+                        vertical: 'top',
+                        horizontal: 'center'
+                      }}
+                    >
+                      <Typography className={classes.typography}>
                         Quick Shop
                       </Typography>
-                    </ExpansionPanelSummary>
-                    <ExpansionPanelActions>
                       <AddQuantityToCart
                         userId={userId}
                         addToCart={atc}
                         product={product}
+                        closePopover={this.handlePopoverClose}
                       />
-                    </ExpansionPanelActions>
-                  </ExpansionPanel>
-                </CardActions>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
+                    </Popover>
+                  </CardActions>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+        </div>
       </div>
     )
   }
@@ -133,8 +196,8 @@ const mapDispatchToProps = dispatch => {
     fetchProducts: () => {
       dispatch(fetchProducts())
     },
-    addToCart: (product, quantity, overwrite, userId) =>
-      dispatch(addToCart(product, quantity, overwrite, userId))
+    addToCart: (productId, quantity, overwrite, userId) =>
+      dispatch(addToCart(productId, quantity, overwrite, userId))
   }
 }
 AllProducts.propTypes = {

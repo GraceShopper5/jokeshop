@@ -8,7 +8,7 @@ import {
 import {connect} from 'react-redux'
 import {Link, withRouter} from 'react-router-dom'
 import PropTypes from 'prop-types'
-import classNames from 'classnames'
+
 import Button from '@material-ui/core/Button'
 import Grid from '@material-ui/core/Grid'
 import Card from '@material-ui/core/Card'
@@ -16,12 +16,20 @@ import CardActions from '@material-ui/core/CardActions'
 import CardContent from '@material-ui/core/CardContent'
 import CardMedia from '@material-ui/core/CardMedia'
 import Typography from '@material-ui/core/Typography'
-import {AddQuantityToCart} from '../components'
+import Paper from '@material-ui/core/Paper'
+import {AddQuantityToCart, ReviewList} from '../components'
 
 import {withStyles} from '@material-ui/core/styles'
 import ReviewForm from './reviewForm'
 
 const styles = theme => ({
+  root: {
+    width: '100%',
+    marginTop: theme.spacing.unit * 3,
+    overflowX: 'auto',
+    marginLeft: theme.spacing.unit,
+    margintRight: theme.spacing.unit
+  },
   icon: {
     marginRight: theme.spacing.unit * 2
   },
@@ -72,9 +80,9 @@ class SingleProduct extends Component {
   }
 
   wasReviewWritten() {
-    const {product, userId} = this.props
-    if (product && product.reviews) {
-      for (let review of product.reviews) {
+    const {reviews, userId} = this.props
+    if (reviews) {
+      for (let review of reviews) {
         if (review.Review.userId === userId) {
           return true
         }
@@ -95,7 +103,14 @@ class SingleProduct extends Component {
   }
 
   render() {
-    const {classes, product, userId, orderHistory, addToCart: atc} = this.props
+    const {
+      classes,
+      product,
+      reviews,
+      userId,
+      orderHistory,
+      addToCart: atc
+    } = this.props
     return (
       <div>
         <Grid container justify="center">
@@ -142,16 +157,16 @@ class SingleProduct extends Component {
             handleReviewSubmission={this.handleReviewSubmission}
           />
         ) : null}
-        <Typography>Reviews</Typography>
-        {product.reviews && product.reviews.length ? (
-          product.reviews.map(review => (
-            <li key={`${review.Review.userId}-${review.Review.productId}`}>
-              {review.Review.content} by {review.firstName}
-            </li>
-          ))
-        ) : (
-          <Typography>No reviews yet!</Typography>
-        )}
+        <Paper className={classes.root}>
+          <Typography gutterBottom variant="h5" component="h5">
+            Reviews
+          </Typography>
+          {reviews && reviews.length ? (
+            <ReviewList reviews={reviews} />
+          ) : (
+            <Typography>No reviews yet!</Typography>
+          )}
+        </Paper>
       </div>
     )
   }
@@ -161,7 +176,8 @@ const mapStateToProps = state => {
   return {
     product: state.product.selectedProduct,
     userId: state.user.id,
-    orderHistory: state.orderHistory
+    orderHistory: state.orderHistory,
+    reviews: state.product.reviews
   }
 }
 
