@@ -10,7 +10,8 @@ import {
   SingleProduct,
   ShoppingCart,
   Profile,
-  Confirmation
+  Confirmation,
+  WelcomePage
 } from './components'
 import {me} from './store'
 
@@ -33,7 +34,7 @@ class Routes extends Component {
           render={renderProps => <SingleProduct {...renderProps} />}
         />
         <Route path="/products" component={AllProducts} />
-        <Route exact path="/" component={AllProducts} />
+        <Route exact path="/" component={WelcomePage} />
         <Route path="/login" component={Login} />
         <Route path="/signup" component={Signup} />
         <Route path="/shopping-cart" component={ShoppingCart} />

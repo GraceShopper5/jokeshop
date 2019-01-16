@@ -1,8 +1,7 @@
 import React, {Component} from 'react'
 import {withRouter} from 'react-router-dom'
 import {connect} from 'react-redux'
-import {purchaseCart} from '../store'
-import {addToCart} from '../store'
+import {purchaseCart, addToCart, deleteCartItem} from '../store'
 import CheckoutForm from './checkoutForm'
 
 import history from '../history'
@@ -15,6 +14,8 @@ import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
 import Paper from '@material-ui/core/Paper'
 import Typography from '@material-ui/core/Typography'
+import Button from '@material-ui/core/Button'
+import DeleteIcon from '@material-ui/icons/Delete'
 import axios from 'axios'
 
 const styles = theme => ({
@@ -33,6 +34,7 @@ class ShoppingCart extends Component {
     super()
     this.handleSubmit = this.handleSubmit.bind(this)
     this.handleAddToCart = this.handleAddToCart.bind(this)
+    this.handleRemoveFromCart = this.handleRemoveFromCart.bind(this)
   }
 
   getUserCartItemSum(cartItems) {
@@ -57,6 +59,10 @@ class ShoppingCart extends Component {
   handleAddToCart(event, product) {
     event.preventDefault()
     this.props.addToCart(product, event.target.value, true, this.props.userId)
+  }
+  handleRemoveFromCart(event, productId) {
+    event.preventDefault()
+    this.props.deleteCartItem(this.props.userId, productId)
   }
 
   async handleSubmit(event) {
@@ -103,11 +109,14 @@ class ShoppingCart extends Component {
               <Table className={classes.table}>
                 <TableHead>
                   <TableRow>
-                    <TableCell>Shopping Cart</TableCell>
+                    <TableCell>
+                      <strong>Shopping Cart</strong>
+                    </TableCell>
                     <TableCell align="right">Name</TableCell>
                     <TableCell align="right">Price</TableCell>
                     <TableCell align="right">Quantity</TableCell>
                     <TableCell align="right">Total Price</TableCell>
+                    <TableCell />
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -129,7 +138,7 @@ class ShoppingCart extends Component {
                             <select
                               defaultValue={product.OrderItem.quantity}
                               onChange={event => {
-                                this.handleAddToCart(event, product)
+                                this.handleAddToCart(event, product.id)
                               }}
                             >
                               {product.OrderItem.quantity > 10
@@ -144,6 +153,19 @@ class ShoppingCart extends Component {
                               100
                             ).toFixed(2)}
                           </TableCell>
+                          <TableCell>
+                            <Button
+                              variant="contained"
+                              color="secondary"
+                              className={classes.button}
+                              onClick={event =>
+                                this.handleRemoveFromCart(event, product)
+                              }
+                            >
+                              Remove Item
+                              <DeleteIcon className={classes.rightIcon} />
+                            </Button>
+                          </TableCell>
                         </TableRow>
                       ))
                     : null}
@@ -154,7 +176,7 @@ class ShoppingCart extends Component {
                     <TableCell align="right" />
                     <TableCell align="right">
                       <strong>
-                        ${this.props.cart
+                        Cart Total: ${this.props.cart
                           ? (
                               this.getUserCartItemSum(this.props.cart) / 100
                             ).toFixed(2)
@@ -211,7 +233,8 @@ const mapDispatchToProps = dispatch => {
       dispatch(purchaseCart(userId, addressId, cart))
     },
     addToCart: (productId, quantity, overwrite, userId) =>
-      dispatch(addToCart(productId, quantity, overwrite, userId))
+      dispatch(addToCart(productId, quantity, overwrite, userId)),
+    deleteCartItem: productId => dispatch(deleteCartItem(productId))
   }
 }
 

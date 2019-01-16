@@ -11,6 +11,9 @@ const styles = theme => ({
   formControl: {
     margin: theme.spacing.unit,
     minWidth: 120
+  },
+  root: {
+    margin: theme.spacing.unit
   }
 })
 
@@ -22,7 +25,7 @@ class addQuantityToCart extends Component {
     this.handleAddToCart = this.handleAddToCart.bind(this)
   }
   handleChange(event) {
-    this.setState({quantity: event.target.value})
+    this.setState({quantity: event.currentTarget.value})
   }
   handleAddToCart() {
     const {userId, product, addToCart, closePopover} = this.props
@@ -34,8 +37,13 @@ class addQuantityToCart extends Component {
   render() {
     const {classes} = this.props
     return (
-      <div>
-        <Button size="small" color="primary" onClick={this.handleAddToCart}>
+      <div className={classes.root}>
+        <Button
+          size="small"
+          color="primary"
+          onClick={this.handleAddToCart}
+          align="center"
+        >
           Add to Cart
         </Button>
         <FormControl variant="outlined" className={classes.formControl}>

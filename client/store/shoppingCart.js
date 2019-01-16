@@ -104,6 +104,25 @@ export const addToCart = (
   }
 }
 
+export const deleteCartItem = (userId, productId) => async dispatch => {
+  try {
+    if (userId) {
+      //   const {data: cart} = await axios.delete(
+      //     `/api/users/${userId}/shopping-cart`,
+      //     {
+      //       productId
+      //     }
+      //   )
+      //   dispatch(getCart(cart))
+      console.log('not implemented yet')
+    } else {
+      console.log('not implemented yet')
+    }
+  } catch (err) {
+    console.error(err)
+  }
+}
+
 export const purchaseCart = (userId, addressId, cart) => async dispatch => {
   if (userId) {
     const {data: newEmptyCart} = await axios.put(

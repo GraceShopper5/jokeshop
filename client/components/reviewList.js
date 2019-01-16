@@ -11,9 +11,6 @@ import yellow from '@material-ui/core/colors/yellow'
 import green from '@material-ui/core/colors/green'
 import blue from '@material-ui/core/colors/blue'
 import deepPurple from '@material-ui/core/colors/deepPurple'
-// import ImageIcon from '@material-ui/icons/Image';
-// import WorkIcon from '@material-ui/icons/Work';
-// import BeachAccessIcon from '@material-ui/icons/BeachAccess';
 
 const colors = ['red', 'orange', 'yellow', 'green', 'blue', 'purple']
 

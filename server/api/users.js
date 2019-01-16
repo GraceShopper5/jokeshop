@@ -108,6 +108,19 @@ router.put('/:id/shopping-cart', async (req, res, next) => {
   }
 })
 
+router.delete('/:id/shopping-cart', async (req, res, next) => {
+  try {
+    const shoppingCart = await User.getUserShoppingCart(req.params.id)
+    const {productId} = req.body
+    await OrderItem.destroy({
+      where: {productId, orderId: shoppingCart.id}
+    })
+    res.json(shoppingCart)
+  } catch (err) {
+    next(err)
+  }
+})
+
 router.post('/:id/addresses', async (req, res, next) => {
   try {
     const {streetAddress, city, state, zipCode} = req.body
