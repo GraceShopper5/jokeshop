@@ -69,14 +69,15 @@ class Profile extends Component {
                     </TableCell>
                     <TableCell align="right">{product.name}</TableCell>
                     <TableCell align="right">
-                      ${(product.currentPrice / 100).toFixed(2)}
+                      $ {(product.OrderItem.pricePaid / 100).toFixed(2)}
                     </TableCell>
                     <TableCell align="right">
                       {product.OrderItem.quantity}
                     </TableCell>
                     <TableCell align="right">
-                      ${(
-                        product.currentPrice *
+                      ${' '}
+                      {(
+                        product.OrderItem.pricePaid *
                         product.OrderItem.quantity /
                         100
                       ).toFixed(2)}
@@ -90,7 +91,8 @@ class Profile extends Component {
                   <TableCell align="right" />
                   <TableCell align="right">
                     <strong>
-                      Order Total: ${order
+                      Order Total: ${' '}
+                      {order
                         ? (this.getOrderSubtotal(order.products) / 100).toFixed(
                             2
                           )
