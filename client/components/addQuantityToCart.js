@@ -25,8 +25,11 @@ class addQuantityToCart extends Component {
     this.setState({quantity: event.target.value})
   }
   handleAddToCart() {
-    const {userId, product, addToCart} = this.props
+    const {userId, product, addToCart, closePopover} = this.props
     addToCart(product, this.state.quantity, false, userId)
+    if (closePopover) {
+      closePopover()
+    }
   }
   render() {
     const {classes} = this.props

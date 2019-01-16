@@ -15,6 +15,7 @@ import ExpansionPanel from '@material-ui/core/ExpansionPanel'
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
 import ExpansionPanelActions from '@material-ui/core/ExpansionPanelActions'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
+import Popover from '@material-ui/core/Popover'
 import {AddQuantityToCart} from '../components'
 import {withStyles} from '@material-ui/core/styles'
 
@@ -59,18 +60,38 @@ const styles = theme => ({
   },
   cardContent: {
     // flexGrow: 1
+  },
+  typography: {
+    margin: theme.spacing.unit * 2
   }
 })
 
 class AllProducts extends Component {
   constructor(props) {
     super(props)
+    this.state = {
+      anchorEl: null
+    }
   }
   componentDidMount() {
     this.props.fetchProducts()
   }
+
+  handleClick = event => {
+    this.setState({
+      anchorEl: event.currentTarget
+    })
+  }
+
+  handleClose = () => {
+    this.setState({
+      anchorEl: null
+    })
+  }
   render() {
     const {classes, userId, addToCart: atc} = this.props
+    const {anchorEl} = this.state
+    const open = Boolean(anchorEl)
     return (
       <div className={classNames(classes.layout, classes.cardGrid)}>
         {/* End hero unit */}
@@ -84,12 +105,22 @@ class AllProducts extends Component {
                   title={product.name}
                 />
                 <CardContent className={classes.cardContent}>
-                  <Typography gutterBottom variant="h5" component="h2">
+                  <Typography
+                    gutterBottom
+                    variant="h5"
+                    component="h2"
+                    className={classes.typography}
+                  >
                     {product.name}
                   </Typography>
-                  <Typography gutterBottom variant="h5" component="h5">{`$ ${(
-                    product.currentPrice / 100.0
-                  ).toFixed(2)}`}</Typography>
+                  <Typography
+                    gutterBottom
+                    variant="h5"
+                    component="h5"
+                    className={classes.typography}
+                  >{`$ ${(product.currentPrice / 100.0).toFixed(
+                    2
+                  )}`}</Typography>
                 </CardContent>
                 <CardActions>
                   <Button
@@ -100,7 +131,39 @@ class AllProducts extends Component {
                   >
                     View
                   </Button>
-                  <ExpansionPanel>
+                  <Button
+                    aria-owns={open ? 'quick-shop-popper' : undefined}
+                    aria-haspopup="true"
+                    variant="contained"
+                    onClick={this.handleClick}
+                  >
+                    Quick Shop
+                  </Button>
+                  <Popover
+                    id="quick-shop-popper"
+                    open={open}
+                    anchorEl={anchorEl}
+                    onClose={this.handleClose}
+                    anchorOrigin={{
+                      vertical: 'bottom',
+                      horizontal: 'center'
+                    }}
+                    transformOrigin={{
+                      vertical: 'top',
+                      horizontal: 'center'
+                    }}
+                  >
+                    <Typography className={classes.typography}>
+                      Quick Shop
+                    </Typography>
+                    <AddQuantityToCart
+                      userId={userId}
+                      addToCart={atc}
+                      product={product}
+                      closePopover={this.handleClose}
+                    />
+                  </Popover>
+                  {/* <ExpansionPanel>
                     <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
                       <Typography className={classes.heading}>
                         Quick Shop
@@ -113,7 +176,7 @@ class AllProducts extends Component {
                         product={product}
                       />
                     </ExpansionPanelActions>
-                  </ExpansionPanel>
+                  </ExpansionPanel> */}
                 </CardActions>
               </Card>
             </Grid>
