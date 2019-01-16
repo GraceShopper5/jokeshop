@@ -24,7 +24,12 @@ router.get('/:id/reviews', async (req, res, next) => {
   try {
     const result = await Product.findOne({
       where: {id: req.params.id},
-      include: [{model: User, attributes: ['firstName']}]
+      include: [
+        {
+          model: User,
+          attributes: ['firstName', 'lastName']
+        }
+      ]
     })
     //this looks like it doesn't make sense, but this is where the reviews show up due to eager loading
     const reviews = result.users
@@ -41,7 +46,11 @@ router.post('/:id/reviews', async (req, res, next) => {
       userId: req.user.id,
       productId: req.params.id
     })
-    res.json({firstName: req.user.firstName, Review: newReview})
+    res.json({
+      firstName: req.user.firstName,
+      lastName: req.user.lastName,
+      Review: newReview
+    })
   } catch (err) {
     next(err)
   }

@@ -12,7 +12,7 @@ const ADD_REVIEW = 'ADD_REVIEW'
 /**
  * INITIAL STATE
  */
-const initialState = {products: [], selectedProduct: {}}
+const initialState = {products: [], selectedProduct: {}, reviews: []}
 
 /**
  * ACTION CREATORS
@@ -76,17 +76,14 @@ export default function(state = initialState, action) {
       return {...state, selectedProduct: action.product}
     case GET_PRODUCT_REVIEWS: {
       const reviews = action.reviews
-      return {...state, selectedProduct: {...state.selectedProduct, reviews}}
+      return {...state, reviews}
     }
     case ADD_REVIEW: {
       const newReview = action.review
-      const existingReviews = state.selectedProduct.reviews || []
+      const existingReviews = state.reviews || []
       return {
         ...state,
-        selectedProduct: {
-          ...state.selectedProduct,
-          reviews: [...existingReviews, newReview]
-        }
+        reviews: [...existingReviews, newReview]
       }
     }
     default:

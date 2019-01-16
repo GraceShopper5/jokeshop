@@ -16,7 +16,7 @@ import CardActions from '@material-ui/core/CardActions'
 import CardContent from '@material-ui/core/CardContent'
 import CardMedia from '@material-ui/core/CardMedia'
 import Typography from '@material-ui/core/Typography'
-import {AddQuantityToCart} from '../components'
+import {AddQuantityToCart, ReviewList} from '../components'
 
 import {withStyles} from '@material-ui/core/styles'
 import ReviewForm from './reviewForm'
@@ -72,9 +72,9 @@ class SingleProduct extends Component {
   }
 
   wasReviewWritten() {
-    const {product, userId} = this.props
-    if (product && product.reviews) {
-      for (let review of product.reviews) {
+    const {reviews, userId} = this.props
+    if (reviews) {
+      for (let review of reviews) {
         if (review.Review.userId === userId) {
           return true
         }
@@ -95,7 +95,14 @@ class SingleProduct extends Component {
   }
 
   render() {
-    const {classes, product, userId, orderHistory, addToCart: atc} = this.props
+    const {
+      classes,
+      product,
+      reviews,
+      userId,
+      orderHistory,
+      addToCart: atc
+    } = this.props
     return (
       <div>
         <Grid container justify="center">
@@ -142,13 +149,11 @@ class SingleProduct extends Component {
             handleReviewSubmission={this.handleReviewSubmission}
           />
         ) : null}
-        <Typography>Reviews</Typography>
-        {product.reviews && product.reviews.length ? (
-          product.reviews.map(review => (
-            <li key={`${review.Review.userId}-${review.Review.productId}`}>
-              {review.Review.content} by {review.firstName}
-            </li>
-          ))
+        <Typography gutterBottom variant="h5" component="h5">
+          Reviews
+        </Typography>
+        {reviews && reviews.length ? (
+          <ReviewList reviews={reviews} />
         ) : (
           <Typography>No reviews yet!</Typography>
         )}
@@ -161,7 +166,8 @@ const mapStateToProps = state => {
   return {
     product: state.product.selectedProduct,
     userId: state.user.id,
-    orderHistory: state.orderHistory
+    orderHistory: state.orderHistory,
+    reviews: state.product.reviews
   }
 }
 

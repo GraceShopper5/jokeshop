@@ -62,11 +62,13 @@ async function seed() {
     // Only one order for each userId can be false
     Order.create({
       userId: 1,
-      isPurchased: true
+      isPurchased: true,
+      purchaseDate: '2019-01-15 11:41:26'
     }),
     Order.create({
       userId: 2,
-      isPurchased: true
+      isPurchased: true,
+      purchaseDate: '2019-01-12 11:41:26'
     })
   ])
   console.log(`seeded ${orders.length} orders`)
@@ -75,17 +77,20 @@ async function seed() {
     OrderItem.create({
       productId: 1,
       orderId: 3,
-      quantity: 2
+      quantity: 2,
+      pricePaid: 1089
     }),
     OrderItem.create({
       productId: 2,
       orderId: 3,
-      quantity: 1
+      quantity: 1,
+      pricePaid: 1231
     }),
     OrderItem.create({
       productId: 3,
       orderId: 4,
-      quantity: 1
+      quantity: 12,
+      pricePaid: 1231
     })
   ])
   console.log(`seeded ${orderItems.length} order items`)
